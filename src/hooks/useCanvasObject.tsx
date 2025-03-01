@@ -15,39 +15,44 @@ type CreateImageCanvasObjectProps = {
   imageObject: HTMLImageElement;
 };
 
-const createImageCanvasObject = ({
-  x,
-  y,
-  imageObject,
-}: CreateImageCanvasObjectProps): CanvasObject => {
-  let { width = 0, height = 0 } = imageObject || {};
-  if (width > height && width > MAX_DIMENSION) {
-    height = Math.round((height * MAX_DIMENSION) / width);
-    width = MAX_DIMENSION;
-  } else if (height > MAX_DIMENSION) {
-    width = Math.round((width * MAX_DIMENSION) / height);
-    height = MAX_DIMENSION;
-  }
-
-  return {
-    id: `${Date.now()}`,
-    x: x - width / 2,
-    y: y - height / 2,
-    width,
-    height,
-    fileType: FileType.IMAGE,
-    fileContent: imageObject?.src || "",
-    lockAspectRatio: true,
-    locked: false,
-  };
-};
-
 export const useCanvasObject = () => {
   const {
+    scale,
+    offsetX,
+    offsetY,
     addCanvasObject,
-    updateCanvasObjectPosition,
-    updateCanvasObjectSize,
+    setCanvasObjectPosition,
+    setCanvasObjectSizeAndPosition,
+    removeCanvasObject,
+    setCanvasObjectLock,
   } = useMoodyStore((state) => state);
+
+  const createImageCanvasObject = ({
+    x,
+    y,
+    imageObject,
+  }: CreateImageCanvasObjectProps): CanvasObject => {
+    let { width = 0, height = 0 } = imageObject || {};
+    if (width > height && width > MAX_DIMENSION) {
+      height = Math.round((height * MAX_DIMENSION) / width);
+      width = MAX_DIMENSION;
+    } else if (height > MAX_DIMENSION) {
+      width = Math.round((width * MAX_DIMENSION) / height);
+      height = MAX_DIMENSION;
+    }
+
+    return {
+      id: `${Date.now()}`,
+      x: x / scale + offsetX - width / 2,
+      y: y / scale + offsetY - height / 2,
+      width,
+      height,
+      fileType: FileType.IMAGE,
+      fileContent: imageObject?.src || "",
+      lockAspectRatio: true,
+      locked: false,
+    };
+  };
 
   const handleNewCanvasObject = ({
     fileType,
@@ -71,16 +76,26 @@ export const useCanvasObject = () => {
   };
 
   const handleDragStop = ({ id, x, y }: HandleDragStopProps) => {
-    updateCanvasObjectPosition(id, x, y);
+    setCanvasObjectPosition(id, x, y);
   };
 
   const handleResizeStop = ({ id, delta, x, y }: HandleResizeStopProps) => {
-    updateCanvasObjectSize(id, delta.width, delta.height, x, y);
+    setCanvasObjectSizeAndPosition(id, delta.width, delta.height, x, y);
+  };
+
+  const handleDeleteCanvasObject = (id: string) => {
+    removeCanvasObject(id);
+  };
+
+  const handleLockCanvasObject = (id: string, lockState: boolean) => {
+    setCanvasObjectLock(id, lockState);
   };
 
   return {
     handleNewCanvasObject,
     handleDragStop,
     handleResizeStop,
+    handleDeleteCanvasObject,
+    handleLockCanvasObject,
   };
 };
