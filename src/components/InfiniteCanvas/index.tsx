@@ -27,6 +27,7 @@ const InfiniteCanvas = () => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
     >
       {canvasObjectList.map((canvasObject) => (
         <CanvasObject key={canvasObject.id} {...canvasObject} />

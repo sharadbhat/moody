@@ -7,6 +7,8 @@ import CanvasObjectControls from "../CanvasObjectControls";
 
 import "./index.css";
 
+const GRID_SIZE = 20;
+
 const CanvasObject = (canvasObject: CanvasObject) => {
   const { scale, offsetX, offsetY, snapToGrid } = useMoodyStore(
     (state) => state
@@ -27,6 +29,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       );
     }
   };
+
+  const scaledGridSize = snapToGrid ? GRID_SIZE * scale : 1;
 
   return (
     <Rnd
@@ -64,8 +68,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
           y: position.y / scale + offsetY,
         });
       }}
-      dragGrid={snapToGrid ? [20, 20] : undefined}
-      resizeGrid={snapToGrid ? [20, 20] : undefined}
+      dragGrid={[scaledGridSize, scaledGridSize]}
+      resizeGrid={[scaledGridSize, scaledGridSize]}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
