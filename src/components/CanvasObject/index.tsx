@@ -17,8 +17,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
     <Rnd
       key={canvasObject.id}
       position={{
-        x: offsetX + canvasObject.x * scale,
-        y: offsetY + canvasObject.y * scale,
+        x: (canvasObject.x - offsetX) * scale,
+        y: (canvasObject.y - offsetY) * scale,
       }}
       size={{
         width: canvasObject.width * scale,
@@ -34,8 +34,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       onDragStop={(_e, d) => {
         handleDragStop({
           id: canvasObject.id,
-          x: (d.x - offsetX) / scale,
-          y: (d.y - offsetY) / scale,
+          x: d.x / scale + offsetX,
+          y: d.y / scale + offsetY,
         });
       }}
       onResizeStop={(_e, _direction, _ref, delta, position) => {
@@ -45,8 +45,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
             width: delta.width / scale,
             height: delta.height / scale,
           },
-          x: (position.x - offsetX) / scale,
-          y: (position.y - offsetY) / scale,
+          x: position.x / scale + offsetX,
+          y: position.y / scale + offsetY,
         });
       }}
       dragGrid={snapToGrid ? [20, 20] : undefined}

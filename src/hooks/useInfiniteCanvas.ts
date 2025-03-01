@@ -52,22 +52,18 @@ export const useInfiniteCanvas = () => {
     event.preventDefault();
 
     const scaleDelta = event.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = scale * scaleDelta;
+    let newScale = scale * scaleDelta;
 
-    if (newScale < 0.1) return setScale(0.1);
-    if (newScale > 3) return setScale(3);
-    // if (newScale > 0.95 && newScale < 1.05) return setScale(1);
+    if (newScale < 0.1) newScale = 0.1;
+    else if (newScale > 3) newScale = 3;
+    else if (newScale > 0.95 && newScale < 1.05) newScale = 1;
 
-    // Get mouse position relative to current canvas scale
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
-
-    const worldX = (mouseX - offsetX) / scale;
-    const worldY = (mouseY - offsetY) / scale;
+    const worldX = event.clientX / scale + offsetX;
+    const worldY = event.clientY / scale + offsetY;
 
     // Compute new offsets to keep zoom centered at mouse
-    const newOffsetX = mouseX - worldX * newScale;
-    const newOffsetY = mouseY - worldY * newScale;
+    const newOffsetX = worldX - event.clientX / newScale;
+    const newOffsetY = worldY - event.clientY / newScale;
 
     setOffset(newOffsetX, newOffsetY);
     setScale(newScale);
@@ -88,7 +84,7 @@ export const useInfiniteCanvas = () => {
     const deltaX = event.clientX - startX;
     const deltaY = event.clientY - startY;
 
-    setOffset(offsetX + deltaX, offsetY + deltaY);
+    setOffset(offsetX - deltaX / scale, offsetY - deltaY / scale);
 
     setStartX(event.clientX);
     setStartY(event.clientY);
