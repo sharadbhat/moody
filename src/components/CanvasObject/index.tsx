@@ -2,6 +2,8 @@ import { Rnd } from "react-rnd";
 import { useMoodyStore } from "../../utils/store";
 import { FileType, type CanvasObject } from "../../utils/types";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
+import { useState } from "react";
+import CanvasObjectControls from "../CanvasObjectControls";
 
 import "./index.css";
 
@@ -12,6 +14,20 @@ const CanvasObject = (canvasObject: CanvasObject) => {
   const snapToGrid = useMoodyStore((state) => state.snapToGrid);
 
   const { handleDragStop, handleResizeStop } = useCanvasObject();
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const renderContent = () => {
+    if (canvasObject.fileType === FileType.IMAGE) {
+      return (
+        <img
+          className={"canvasImage"}
+          src={canvasObject.fileContent}
+          onDrag={(e) => e.preventDefault()}
+        />
+      );
+    }
+  };
 
   return (
     <Rnd
@@ -51,16 +67,18 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       }}
       dragGrid={snapToGrid ? [20, 20] : undefined}
       resizeGrid={snapToGrid ? [20, 20] : undefined}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div>
-        {canvasObject.fileType === FileType.IMAGE && (
-          <img
-            className={"canvasImage"}
-            src={canvasObject.fileContent}
-            onDrag={(e) => e.preventDefault()}
-          />
-        )}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <CanvasObjectControls id={canvasObject.id} show={isHovered} />
       </div>
+      {renderContent()}
     </Rnd>
   );
 };
