@@ -43,13 +43,11 @@ const createImageCanvasObject = ({
 };
 
 export const useCanvasObject = () => {
-  const addCanvasObject = useMoodyStore((state) => state.addCanvasObject);
-  const updateCanvasObjectPosition = useMoodyStore(
-    (state) => state.updateCanvasObjectPosition
-  );
-  const updateCanvasObjectSize = useMoodyStore(
-    (state) => state.updateCanvasObjectSize
-  );
+  const {
+    addCanvasObject,
+    updateCanvasObjectPosition,
+    updateCanvasObjectSize,
+  } = useMoodyStore((state) => state);
 
   const handleNewCanvasObject = ({
     fileType,

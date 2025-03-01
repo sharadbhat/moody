@@ -8,10 +8,9 @@ import CanvasObjectControls from "../CanvasObjectControls";
 import "./index.css";
 
 const CanvasObject = (canvasObject: CanvasObject) => {
-  const scale = useMoodyStore((state) => state.scale);
-  const offsetX = useMoodyStore((state) => state.offsetX);
-  const offsetY = useMoodyStore((state) => state.offsetY);
-  const snapToGrid = useMoodyStore((state) => state.snapToGrid);
+  const { scale, offsetX, offsetY, snapToGrid } = useMoodyStore(
+    (state) => state
+  );
 
   const { handleDragStop, handleResizeStop } = useCanvasObject();
 

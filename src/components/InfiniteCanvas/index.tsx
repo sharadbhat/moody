@@ -5,7 +5,7 @@ import CanvasObject from "../CanvasObject";
 import "./index.css";
 
 const InfiniteCanvas = () => {
-  const canvasObjects = useMoodyStore((state) => state.canvasObjectList);
+  const { canvasObjectList } = useMoodyStore((state) => state);
   const {
     handleDragOver,
     handleDrop,
@@ -28,7 +28,7 @@ const InfiniteCanvas = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {canvasObjects.map((canvasObject) => (
+      {canvasObjectList.map((canvasObject) => (
         <CanvasObject key={canvasObject.id} {...canvasObject} />
       ))}
     </div>

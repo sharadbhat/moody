@@ -1,8 +1,6 @@
 export enum FileType {
   IMAGE = "IMAGE",
   TEXT = "TEXT",
-  AUDIO = "AUDIO",
-  VIDEO = "VIDEO",
 }
 
 export interface CanvasObject {
