@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMoodyStore } from "../utils/store";
 import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
