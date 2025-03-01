@@ -46,8 +46,9 @@ export interface MoodyStore {
   setOffset: (offsetX: number, offsetY: number) => void;
   addCanvasObject: (canvasObject: CanvasObject) => void;
   removeCanvasObject: (canvasObjectId: string) => void;
-  updateCanvasObjectPosition: (id: string, x: number, y: number) => void;
-  updateCanvasObjectSize: (
+  setCanvasObjectLock: (canvasObjectId: string, lockState: boolean) => void;
+  setCanvasObjectPosition: (id: string, x: number, y: number) => void;
+  setCanvasObjectSizeAndPosition: (
     id: string,
     widthDelta: number,
     heightDelta: number,

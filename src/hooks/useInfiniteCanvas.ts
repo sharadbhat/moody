@@ -37,8 +37,8 @@ export const useInfiniteCanvas = () => {
             handleNewCanvasObject({
               fileType: FileType.IMAGE,
               fileContent: reader.result as string,
-              x: event.clientX - offsetX + prevX,
-              y: event.clientY - offsetY,
+              x: event.clientX + prevX,
+              y: event.clientY,
             });
             prevX += 100; // Offset images by 100px if multiple dropped
           };
@@ -49,8 +49,8 @@ export const useInfiniteCanvas = () => {
       handleNewCanvasObject({
         fileType: FileType.IMAGE,
         fileContent: url,
-        x: event.clientX - offsetX,
-        y: event.clientY - offsetY,
+        x: event.clientX / scale,
+        y: event.clientY / scale,
       });
     }
   };
@@ -77,6 +77,8 @@ export const useInfiniteCanvas = () => {
   };
 
   const handleMouseDown = (event) => {
+    console.log("mouse down");
+
     setStartX(event.clientX);
     setStartY(event.clientY);
 

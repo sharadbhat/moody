@@ -41,14 +41,23 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       ),
     })),
 
-  updateCanvasObjectPosition: (id, x, y) =>
+  setCanvasObjectLock: (canvasObjectId, lockState) =>
+    set((state) => ({
+      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
+        canvasObject.id === canvasObjectId
+          ? { ...canvasObject, locked: lockState }
+          : canvasObject
+      ),
+    })),
+
+  setCanvasObjectPosition: (id, x, y) =>
     set((state) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id ? { ...canvasObject, x, y } : canvasObject
       ),
     })),
 
-  updateCanvasObjectSize: (id, widthDelta, heightDelta, x, y) =>
+  setCanvasObjectSizeAndPosition: (id, widthDelta, heightDelta, x, y) =>
     set((state) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id

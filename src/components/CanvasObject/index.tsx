@@ -50,6 +50,10 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         e.preventDefault();
         e.stopPropagation();
       }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       onDragStop={(_e, d) => {
         handleDragStop({
           id: canvasObject.id,
@@ -79,7 +83,11 @@ const CanvasObject = (canvasObject: CanvasObject) => {
           justifyContent: "flex-end",
         }}
       >
-        <CanvasObjectControls id={canvasObject.id} show={isHovered} />
+        <CanvasObjectControls
+          id={canvasObject.id}
+          show={isHovered}
+          locked={canvasObject.locked}
+        />
       </div>
       {renderContent()}
     </Rnd>

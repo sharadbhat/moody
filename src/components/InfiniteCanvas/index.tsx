@@ -17,10 +17,7 @@ const InfiniteCanvas = () => {
 
   return (
     <div
-      style={{
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }}
+      className="infiniteCanvas"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onWheel={handleWheelScroll}
