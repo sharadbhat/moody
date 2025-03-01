@@ -15,11 +15,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: "Install Dependencies"
-        run: yarn
+        run: npm
 
       - name: "Github Pages Deployment"
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          yarn deploy -u "github-actions-bot <support+actions@github.com>"
+          npm deploy -u "github-actions-bot <support+actions@github.com>"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
