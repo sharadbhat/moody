@@ -13,9 +13,9 @@ export const useInfiniteCanvas = () => {
 
   const { handleNewCanvasObject } = useCanvasObject();
 
-  const [isPanning, setIsPanning] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
+  const [isPanning, setIsPanning] = useState(false);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -24,20 +24,27 @@ export const useInfiniteCanvas = () => {
   const handleDrop = (event) => {
     event.preventDefault();
 
-    const file = event.dataTransfer?.files[0];
+    const files = event.dataTransfer?.files;
     const url = event.dataTransfer?.getData("URL");
 
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleNewCanvasObject({
-          fileType: FileType.IMAGE,
-          fileContent: reader.result as string,
-          x: event.clientX - offsetX,
-          y: event.clientY - offsetY,
-        });
-      };
-      reader.readAsDataURL(file);
+    if (files.length !== 0) {
+      let prevX = 0;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            handleNewCanvasObject({
+              fileType: FileType.IMAGE,
+              fileContent: reader.result as string,
+              x: event.clientX - offsetX + prevX,
+              y: event.clientY - offsetY,
+            });
+            prevX += 100; // Offset images by 100px if multiple dropped
+          };
+          reader.readAsDataURL(file);
+        }
+      }
     } else if (url && url.startsWith("http")) {
       handleNewCanvasObject({
         fileType: FileType.IMAGE,
