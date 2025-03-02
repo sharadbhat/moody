@@ -36,12 +36,14 @@ export interface HandleResizeStopProps {
 }
 
 export interface MoodyStore {
+  boardName: string;
   canvasObjectList: CanvasObject[];
   scale: number;
   offsetX: number;
   offsetY: number;
   snapToGrid: boolean;
   toggleSnapToGrid: () => void;
+  setBoardName: (boardName: string) => void;
   setScale: (scale: number) => void;
   setOffset: (offsetX: number, offsetY: number) => void;
   addCanvasObject: (canvasObject: CanvasObject) => void;
