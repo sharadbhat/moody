@@ -57,6 +57,8 @@ export interface MoodyStore {
     x: number,
     y: number
   ) => void;
+  setCanvasObjectLayerBack: (id: string) => void;
+  setCanvasObjectLayerFront: (id: string) => void;
 }
 
 export interface DrawImageProps {

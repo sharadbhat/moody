@@ -25,6 +25,8 @@ export const useCanvasObject = () => {
     setCanvasObjectSizeAndPosition,
     removeCanvasObject,
     setCanvasObjectLock,
+    setCanvasObjectLayerBack,
+    setCanvasObjectLayerFront,
   } = useMoodyStore((state) => state);
 
   const createImageCanvasObject = ({
@@ -91,11 +93,21 @@ export const useCanvasObject = () => {
     setCanvasObjectLock(id, lockState);
   };
 
+  const handleSendToBack = (id: string) => {
+    setCanvasObjectLayerBack(id);
+  };
+
+  const handleBringToFront = (id: string) => {
+    setCanvasObjectLayerFront(id);
+  };
+
   return {
     handleNewCanvasObject,
     handleDragStop,
     handleResizeStop,
     handleDeleteCanvasObject,
     handleLockCanvasObject,
+    handleSendToBack,
+    handleBringToFront,
   };
 };

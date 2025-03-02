@@ -77,4 +77,44 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
           : canvasObject
       ),
     })),
+
+  setCanvasObjectLayerBack: (id) =>
+    set((state) => {
+      const index = state.canvasObjectList.findIndex(
+        (canvasObject) => canvasObject.id === id
+      );
+      if (index === 0) {
+        return state;
+      }
+
+      const canvasObject = state.canvasObjectList[index];
+      const newList = state.canvasObjectList.filter(
+        (canvasObject) => canvasObject.id !== id
+      );
+      newList.unshift(canvasObject);
+
+      return {
+        canvasObjectList: newList,
+      };
+    }),
+
+  setCanvasObjectLayerFront: (id) =>
+    set((state) => {
+      const index = state.canvasObjectList.findIndex(
+        (canvasObject) => canvasObject.id === id
+      );
+      if (index === state.canvasObjectList.length - 1) {
+        return state;
+      }
+
+      const canvasObject = state.canvasObjectList[index];
+      const newList = state.canvasObjectList.filter(
+        (canvasObject) => canvasObject.id !== id
+      );
+      newList.push(canvasObject);
+
+      return {
+        canvasObjectList: newList,
+      };
+    }),
 }));

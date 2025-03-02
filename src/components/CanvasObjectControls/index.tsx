@@ -1,5 +1,11 @@
 import { ActionIcon } from "@mantine/core";
-import { IconLock, IconLockOpen, IconTrash } from "@tabler/icons-react";
+import {
+  IconLayersSelected,
+  IconLayersSelectedBottom,
+  IconLock,
+  IconLockOpen,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
 import { useState } from "react";
 
@@ -14,14 +20,30 @@ const CanvasObjectControls = ({
   show,
   locked,
 }: CanvasObjectControlsProps) => {
-  const { handleDeleteCanvasObject, handleLockCanvasObject } =
-    useCanvasObject();
+  const {
+    handleBringToFront,
+    handleSendToBack,
+    handleLockCanvasObject,
+    handleDeleteCanvasObject,
+  } = useCanvasObject();
 
   if (show) {
     return (
       <div style={{ position: "absolute", top: -20, backgroundColor: "white" }}>
         {!locked && (
           <>
+            <CanvasObjectControlButton
+              icon={<IconLayersSelected />}
+              arialabel={"Bring to front"}
+              onClick={() => handleBringToFront(id)}
+              isEnabled={false}
+            />
+            <CanvasObjectControlButton
+              icon={<IconLayersSelectedBottom />}
+              arialabel={"Send to back"}
+              onClick={() => handleSendToBack(id)}
+              isEnabled={false}
+            />
             <CanvasObjectControlButton
               icon={<IconLockOpen />}
               arialabel={"Lock object"}
