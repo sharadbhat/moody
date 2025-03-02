@@ -1,0 +1,24 @@
+.navbar {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  justify-self: start;
+}
+
+.settings {
+  justify-self: end;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.settings-group {
+  display: flex;
+  gap: 8px;
+}

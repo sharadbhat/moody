@@ -77,8 +77,6 @@ export const useInfiniteCanvas = () => {
   };
 
   const handleMouseDown = (event) => {
-    console.log("mouse down");
-
     setStartX(event.clientX);
     setStartY(event.clientY);
 

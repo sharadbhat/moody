@@ -3,6 +3,7 @@ import type { MoodyStore } from "./types";
 
 export const useMoodyStore = create<MoodyStore>()((set) => ({
   // State variables
+  boardName: "Board name",
   canvasObjectList: [],
   scale: 1,
   offsetX: 0,
@@ -18,6 +19,11 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
     })),
 
   // State actions
+  setBoardName: (boardName) =>
+    set(() => ({
+      boardName,
+    })),
+
   setScale: (scale) =>
     set(() => ({
       scale,

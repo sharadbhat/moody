@@ -2,6 +2,7 @@ import { AppShell, createTheme, MantineProvider } from "@mantine/core";
 import InfiniteCanvas from "./components/InfiniteCanvas";
 import ColorSchemeContext from "./utils/colorSchemeContext";
 import { useState } from "react";
+import Navbar from "./components/Navbar";
 
 const theme = createTheme({
   colors: {},
@@ -20,7 +21,9 @@ function App() {
             height: 60,
           }}
         >
-          <AppShell.Header>Moody</AppShell.Header>
+          <AppShell.Header>
+            <Navbar />
+          </AppShell.Header>
           <AppShell.Main style={{ paddingTop: 0 }}>
             <InfiniteCanvas />
           </AppShell.Main>
