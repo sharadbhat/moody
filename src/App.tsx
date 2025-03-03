@@ -21,9 +21,7 @@ function App() {
             height: 60,
           }}
         >
-          <AppShell.Header>
-            <Navbar />
-          </AppShell.Header>
+          <Navbar />
           <AppShell.Main style={{ paddingTop: 0 }}>
             <InfiniteCanvas />
           </AppShell.Main>
