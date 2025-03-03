@@ -41,8 +41,22 @@ export interface MoodyStore {
   scale: number;
   offsetX: number;
   offsetY: number;
+  isCropping: boolean;
+  cropDimensions: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
   snapToGrid: boolean;
   toggleSnapToGrid: () => void;
+  setIsCropping: (isCropping: boolean) => void;
+  setCropDimensions: (
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => void;
   setBoardName: (boardName: string) => void;
   setScale: (scale: number) => void;
   setOffset: (offsetX: number, offsetY: number) => void;

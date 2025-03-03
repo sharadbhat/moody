@@ -1,6 +1,6 @@
 import { useFullscreen } from "@mantine/hooks";
 import { useMoodyStore } from "../../utils/store";
-import { ActionIcon, Menu, Tooltip } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 import {
   IconArrowsMaximize,
   IconArrowsMinimize,
@@ -9,32 +9,15 @@ import {
   IconDownload,
   IconGrid4x4,
 } from "@tabler/icons-react";
-import { toJpeg, toPng } from "html-to-image";
+import { CONSTANTS } from "../../utils/constants";
+import DownloadMenu from "./DownloadMenu";
 
 import "./index.css";
 
 const Settings = () => {
-  const { boardName, snapToGrid, toggleSnapToGrid } = useMoodyStore(
-    (state) => state
-  );
+  const { snapToGrid, toggleSnapToGrid } = useMoodyStore((state) => state);
 
   const { toggle, fullscreen } = useFullscreen();
-
-  const downloadAsImage = (imageType: string) => {
-    const canvas = document.querySelector(
-      "[class*='infiniteCanvas']"
-    ) as HTMLCanvasElement;
-
-    const toImageType = imageType === "jpeg" ? toJpeg : toPng;
-
-    if (!canvas) return;
-    toImageType(canvas).then((dataUrl) => {
-      const link = document.createElement("a");
-      link.download = `${boardName}.${imageType}`;
-      link.href = dataUrl;
-      link.click();
-    });
-  };
 
   return (
     <div className="settings">
@@ -45,23 +28,14 @@ const Settings = () => {
           isEnabled={snapToGrid}
           onClick={toggleSnapToGrid}
         />
-        <Menu shadow="md" width={150} withArrow position="bottom">
-          <Menu.Target>
-            <div>
-              <SettingsButton
-                title="Download"
-                icon={<IconDownload stroke={1.5} />}
-                isEnabled={false}
-                onClick={null}
-              />
-            </div>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Label>Download as</Menu.Label>
-            <Menu.Item onClick={() => downloadAsImage("jpeg")}>JPEG</Menu.Item>
-            <Menu.Item onClick={() => downloadAsImage("png")}>PNG</Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        <DownloadMenu>
+          <SettingsButton
+            title="Download"
+            icon={<IconDownload stroke={1.5} />}
+            isEnabled={false}
+            onClick={() => {}}
+          />
+        </DownloadMenu>
         <SettingsButton
           title={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
           icon={
@@ -80,17 +54,13 @@ const Settings = () => {
           title="Github"
           icon={<IconBrandGithub stroke={1.5} />}
           isEnabled={false}
-          onClick={() =>
-            window.open("https://github.com/sharadbhat/moody/", "_blank")
-          }
+          onClick={() => window.open(CONSTANTS.REPO_URL, "_blank")}
         />
         <SettingsButton
           title="Figma"
           icon={<IconBrandFigma stroke={1.5} />}
           isEnabled={false}
-          onClick={() =>
-            window.open("https://github.com/sharadbhat/moody/", "_blank")
-          }
+          onClick={() => window.open(CONSTANTS.FIGMA_URL, "_blank")}
         />
       </div>
     </div>

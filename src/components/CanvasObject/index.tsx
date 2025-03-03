@@ -10,7 +10,7 @@ import "./index.css";
 const GRID_SIZE = 20;
 
 const CanvasObject = (canvasObject: CanvasObject) => {
-  const { scale, offsetX, offsetY, snapToGrid } = useMoodyStore(
+  const { scale, offsetX, offsetY, snapToGrid, isCropping } = useMoodyStore(
     (state) => state
   );
 
@@ -44,8 +44,8 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         height: canvasObject.height * scale,
       }}
       lockAspectRatio={canvasObject.lockAspectRatio}
-      disableDragging={canvasObject.locked}
-      enableResizing={!canvasObject.locked}
+      disableDragging={!isCropping ? canvasObject.locked : true}
+      enableResizing={!isCropping ? !canvasObject.locked : false}
       onDragStart={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -74,7 +74,7 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       }}
       dragGrid={[scaledGridSize, scaledGridSize]}
       resizeGrid={[scaledGridSize, scaledGridSize]}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => setIsHovered(!isCropping ? true : false)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div

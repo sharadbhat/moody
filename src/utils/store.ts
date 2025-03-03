@@ -11,11 +11,33 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
 
   // Global settings
   snapToGrid: false,
+  isCropping: false,
+  cropDimensions: {
+    x: window.innerWidth / 2 - 250,
+    y: window.innerHeight / 2 - 250,
+    width: 500,
+    height: 500,
+  },
 
   // Settings actions
   toggleSnapToGrid: () =>
     set((state) => ({
       snapToGrid: !state.snapToGrid,
+    })),
+
+  setIsCropping: (isCropping) =>
+    set(() => ({
+      isCropping,
+    })),
+
+  setCropDimensions: (x, y, width, height) =>
+    set(() => ({
+      cropDimensions: {
+        x,
+        y,
+        width,
+        height,
+      },
     })),
 
   // State actions
