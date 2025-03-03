@@ -1,5 +1,5 @@
-import { create } from "zustand";
 import type { MoodyStore } from "./types";
+import { create } from "zustand";
 
 export const useMoodyStore = create<MoodyStore>()((set) => ({
   // State variables

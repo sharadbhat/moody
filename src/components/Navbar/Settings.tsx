@@ -1,5 +1,4 @@
-import { useFullscreen } from "@mantine/hooks";
-import { useMoodyStore } from "../../utils/store";
+import "./index.css";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import {
   IconArrowsMaximize,
@@ -8,11 +7,13 @@ import {
   IconBrandGithub,
   IconDownload,
   IconGrid4x4,
+  IconPhoto,
+  IconTextSize,
 } from "@tabler/icons-react";
 import { CONSTANTS } from "../../utils/constants";
 import DownloadMenu from "./DownloadMenu";
-
-import "./index.css";
+import { useFullscreen } from "@mantine/hooks";
+import { useMoodyStore } from "../../utils/store";
 
 const Settings = () => {
   const { snapToGrid, toggleSnapToGrid } = useMoodyStore((state) => state);
@@ -21,6 +22,20 @@ const Settings = () => {
 
   return (
     <div className="settings">
+      <div className="settings-group">
+        <SettingsButton
+          title="Add image"
+          icon={<IconPhoto stroke={1.5} />}
+          isEnabled={false}
+          onClick={() => {}}
+        />
+        <SettingsButton
+          title="Add text"
+          icon={<IconTextSize stroke={1.5} />}
+          isEnabled={false}
+          onClick={() => {}}
+        />
+      </div>
       <div className="settings-group">
         <SettingsButton
           title="Snap to grid"

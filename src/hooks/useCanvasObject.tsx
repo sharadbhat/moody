@@ -1,11 +1,11 @@
-import { useMoodyStore } from "../utils/store";
 import {
   CanvasObject,
-  FileType,
   type CreateAndAddCanvasObjectProps,
+  FileType,
   type HandleDragStopProps,
   type HandleResizeStopProps,
 } from "../utils/types";
+import { useMoodyStore } from "../utils/store";
 
 const MAX_DIMENSION = 300;
 

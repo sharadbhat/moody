@@ -1,9 +1,8 @@
-import { useInfiniteCanvas } from "../../hooks/useInfiniteCanvas";
-import { useMoodyStore } from "../../utils/store";
+import "./index.css";
 import CanvasObject from "../CanvasObject";
 import CropSelectionTool from "./CropSelectionTool";
-
-import "./index.css";
+import { useInfiniteCanvas } from "../../hooks/useInfiniteCanvas";
+import { useMoodyStore } from "../../utils/store";
 
 const InfiniteCanvas = () => {
   const { canvasObjectList, isCropping } = useMoodyStore((state) => state);

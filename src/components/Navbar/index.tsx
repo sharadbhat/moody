@@ -1,8 +1,7 @@
-import { useMoodyStore } from "../../utils/store";
+import "./index.css";
 import BoardName from "./BoardName";
 import Settings from "./Settings";
-
-import "./index.css";
+import { useMoodyStore } from "../../utils/store";
 
 const Navbar = () => {
   const { boardName } = useMoodyStore((state) => state);

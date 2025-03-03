@@ -1,4 +1,3 @@
-import { ActionIcon } from "@mantine/core";
 import {
   IconLayersSelected,
   IconLayersSelectedBottom,
@@ -6,6 +5,7 @@ import {
   IconLockOpen,
   IconTrash,
 } from "@tabler/icons-react";
+import { ActionIcon } from "@mantine/core";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
 import { useState } from "react";
 

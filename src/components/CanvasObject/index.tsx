@@ -1,11 +1,10 @@
-import { Rnd } from "react-rnd";
-import { useMoodyStore } from "../../utils/store";
-import { FileType, type CanvasObject } from "../../utils/types";
-import { useCanvasObject } from "../../hooks/useCanvasObject";
-import { useState } from "react";
-import CanvasObjectControls from "../CanvasObjectControls";
-
 import "./index.css";
+import { type CanvasObject, FileType } from "../../utils/types";
+import CanvasObjectControls from "../CanvasObjectControls";
+import { Rnd } from "react-rnd";
+import { useCanvasObject } from "../../hooks/useCanvasObject";
+import { useMoodyStore } from "../../utils/store";
+import { useState } from "react";
 
 const GRID_SIZE = 20;
 

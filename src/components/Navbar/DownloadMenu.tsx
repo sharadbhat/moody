@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { Button, Flex, Menu, NativeSelect, Slider, Text } from "@mantine/core";
+import {
+  IconChevronDown,
+  IconFileTypeJpg,
+  IconFileTypePng,
+} from "@tabler/icons-react";
 import { toCanvas, toJpeg, toPng } from "html-to-image";
-import { useMoodyStore } from "../../utils/store";
-import { Text, Menu, NativeSelect, Slider, Flex, Button } from "@mantine/core";
 import { CONSTANTS } from "../../utils/constants";
+import { useMoodyStore } from "../../utils/store";
+import { useState } from "react";
 
 const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
   const { boardName, isCropping, setIsCropping, cropDimensions } =
@@ -123,6 +128,14 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
                 value={imageType}
                 onChange={(e) => setImageType(e.target.value)}
                 mt="md"
+                leftSection={
+                  imageType === "jpeg" ? (
+                    <IconFileTypeJpg />
+                  ) : (
+                    <IconFileTypePng />
+                  )
+                }
+                rightSection={<IconChevronDown size={18} />}
               >
                 <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
