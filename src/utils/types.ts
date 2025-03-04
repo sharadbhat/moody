@@ -38,6 +38,7 @@ export interface HandleResizeStopProps {
 export interface MoodyStore {
   boardName: string;
   canvasObjectList: CanvasObject[];
+  backgroundColor: string;
   scale: number;
   offsetX: number;
   offsetY: number;
@@ -58,6 +59,7 @@ export interface MoodyStore {
     height: number
   ) => void;
   setBoardName: (boardName: string) => void;
+  setBackgroundColor: (color: string) => void;
   setScale: (scale: number) => void;
   setOffset: (offsetX: number, offsetY: number) => void;
   addCanvasObject: (canvasObject: CanvasObject) => void;

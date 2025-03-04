@@ -17,6 +17,7 @@ import { CONSTANTS } from "../../utils/constants";
 import DownloadMenu from "./DownloadMenu";
 import { useFullscreen } from "@mantine/hooks";
 import { useMoodyStore } from "../../utils/store";
+import BackgroundColorPicker from "./BackgroundColorPicker";
 
 const Settings = () => {
   const { snapToGrid, toggleSnapToGrid } = useMoodyStore((state) => state);
@@ -40,6 +41,9 @@ const Settings = () => {
           onClick={() => {}}
           showAddIcon
         />
+      </div>
+      <div className="settings-group">
+        <BackgroundColorPicker />
       </div>
       <div className="settings-group">
         <SettingsButton

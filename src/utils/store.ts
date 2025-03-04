@@ -5,6 +5,7 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   // State variables
   boardName: "Board name",
   canvasObjectList: [],
+  backgroundColor: "#ffffff",
   scale: 1,
   offsetX: 0,
   offsetY: 0,
@@ -44,6 +45,11 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   setBoardName: (boardName) =>
     set(() => ({
       boardName,
+    })),
+
+  setBackgroundColor: (backgroundColor) =>
+    set(() => ({
+      backgroundColor,
     })),
 
   setScale: (scale) =>

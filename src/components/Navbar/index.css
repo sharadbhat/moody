@@ -52,3 +52,7 @@
   flex-direction: column;
   gap: 8px;
 }
+
+.colorpicker-dropdown {
+  padding: 8px;
+}
