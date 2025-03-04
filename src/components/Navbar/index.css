@@ -9,11 +9,10 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 10px 20px;
-  border: 1px solid black;
   border-radius: 10px;
   z-index: 100;
   backdrop-filter: blur(20px);
-  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo {

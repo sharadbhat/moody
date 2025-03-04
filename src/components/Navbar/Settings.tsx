@@ -1,13 +1,16 @@
 import "./index.css";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon, Menu, Tooltip } from "@mantine/core";
 import {
   IconArrowsMaximize,
   IconArrowsMinimize,
   IconBrandFigma,
   IconBrandGithub,
+  IconDotsVertical,
   IconDownload,
+  IconExternalLink,
   IconGrid4x4,
   IconPhoto,
+  IconPlus,
   IconTextSize,
 } from "@tabler/icons-react";
 import { CONSTANTS } from "../../utils/constants";
@@ -28,12 +31,14 @@ const Settings = () => {
           icon={<IconPhoto stroke={1.5} />}
           isEnabled={false}
           onClick={() => {}}
+          showAddIcon
         />
         <SettingsButton
           title="Add text"
           icon={<IconTextSize stroke={1.5} />}
           isEnabled={false}
           onClick={() => {}}
+          showAddIcon
         />
       </div>
       <div className="settings-group">
@@ -65,18 +70,16 @@ const Settings = () => {
         />
       </div>
       <div className="settings-group">
-        <SettingsButton
-          title="Github"
-          icon={<IconBrandGithub stroke={1.5} />}
-          isEnabled={false}
-          onClick={() => window.open(CONSTANTS.REPO_URL, "_blank")}
-        />
-        <SettingsButton
-          title="Figma"
-          icon={<IconBrandFigma stroke={1.5} />}
-          isEnabled={false}
-          onClick={() => window.open(CONSTANTS.FIGMA_URL, "_blank")}
-        />
+        <MoreMenu>
+          <div>
+            <SettingsButton
+              title="More"
+              icon={<IconDotsVertical stroke={1.5} />}
+              isEnabled={false}
+              onClick={() => {}}
+            />
+          </div>
+        </MoreMenu>
       </div>
     </div>
   );
@@ -87,23 +90,70 @@ const SettingsButton = ({
   icon,
   isEnabled,
   onClick,
+  showAddIcon = false,
 }: {
   title: string;
   icon: React.ReactNode;
   isEnabled: boolean;
   onClick: () => void;
+  showAddIcon?: boolean;
 }) => {
   return (
     <Tooltip label={title} position={"bottom"} withArrow>
-      <ActionIcon
-        variant={isEnabled ? "filled" : "default"}
-        size={"lg"}
-        radius={"md"}
-        onClick={onClick}
-      >
-        {icon}
-      </ActionIcon>
+      <div style={{ position: "relative" }}>
+        <ActionIcon
+          variant={isEnabled ? "filled" : "default"}
+          size={"lg"}
+          radius={"md"}
+          onClick={onClick}
+        >
+          {icon}
+        </ActionIcon>
+        {showAddIcon && (
+          <div
+            style={{
+              position: "absolute",
+              top: -5,
+              right: -5,
+              backgroundColor: "var(--mantine-color-white)",
+              borderRadius: "50%",
+              border: "0.0625rem solid var(--mantine-color-gray-3)",
+              width: 15,
+              height: 15,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <IconPlus stroke={1.5} size={16} />
+          </div>
+        )}
+      </div>
     </Tooltip>
+  );
+};
+
+const MoreMenu = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Menu width={200} withArrow>
+      <Menu.Target>{children}</Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          leftSection={<IconBrandGithub stroke={1.5} />}
+          rightSection={<IconExternalLink stroke={1.5} size={16} />}
+          onClick={() => window.open(CONSTANTS.REPO_URL, "_blank")}
+        >
+          GitHub
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<IconBrandFigma stroke={1.5} />}
+          rightSection={<IconExternalLink stroke={1.5} size={16} />}
+          onClick={() => window.open(CONSTANTS.FIGMA_URL, "_blank")}
+        >
+          Figma
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 };
 
