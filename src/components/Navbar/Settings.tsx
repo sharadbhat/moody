@@ -103,7 +103,13 @@ const SettingsButton = ({
   showAddIcon?: boolean;
 }) => {
   return (
-    <Tooltip label={title} position={"bottom"} withArrow>
+    <Tooltip
+      label={title}
+      position={"bottom"}
+      withArrow
+      openDelay={500}
+      zIndex={1000}
+    >
       <div style={{ position: "relative" }}>
         <ActionIcon
           variant={isEnabled ? "filled" : "default"}

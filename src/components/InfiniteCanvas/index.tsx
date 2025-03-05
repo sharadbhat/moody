@@ -5,7 +5,9 @@ import { useInfiniteCanvas } from "../../hooks/useInfiniteCanvas";
 import { useMoodyStore } from "../../utils/store";
 
 const InfiniteCanvas = () => {
-  const { canvasObjectList, isCropping } = useMoodyStore((state) => state);
+  const { canvasObjectList, isCropping, backgroundColor } = useMoodyStore(
+    (state) => state
+  );
   const {
     handleDragOver,
     handleDrop,
@@ -26,6 +28,7 @@ const InfiniteCanvas = () => {
         onMouseMove={!isCropping ? handleMouseMove : null}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        style={{ backgroundColor }}
       >
         {canvasObjectList.map((canvasObject) => (
           <CanvasObject key={canvasObject.id} {...canvasObject} />

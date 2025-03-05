@@ -37,7 +37,6 @@ const BoardName = ({ name }: { name: string }) => {
               fontSize: 25,
             },
           }}
-          // size="lg"
           error={isError}
           onChange={(event) => setNewName(event.currentTarget.value)}
           onBlur={handleSubmit}

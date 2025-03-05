@@ -9,15 +9,24 @@ import { CONSTANTS } from "../../utils/constants";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
 
+const scaleMultiplier = 2;
+
 const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
-  const { boardName, isCropping, setIsCropping, cropDimensions } =
-    useMoodyStore((state) => state);
+  const {
+    boardName,
+    isCropping,
+    setIsCropping,
+    cropDimensions,
+    backgroundColor,
+  } = useMoodyStore((state) => state);
 
   const [imageType, setImageType] = useState("jpeg");
-  const [imageScale, setImageScale] = useState(1);
+  const [imageScale, setImageScale] = useState(1 * scaleMultiplier);
   const [canvasDiv, setCanvasDiv] = useState<HTMLDivElement | null>(null);
 
-  const onDownloadClick = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const fetchCanvasDiv = () => {
     const canvasDiv = document.querySelector(
       "[class*='infiniteCanvas']"
     ) as HTMLDivElement;
@@ -34,12 +43,14 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
 
     toImageType(canvasDiv, {
       pixelRatio: imageScale,
-      backgroundColor: "white",
+      backgroundColor,
     }).then((dataUrl) => {
       const link = document.createElement("a");
       link.download = `${boardName}.${imageType}`;
       link.href = dataUrl;
       link.click();
+
+      setIsDropdownOpen(false);
     });
   };
 
@@ -48,7 +59,7 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
 
     toCanvas(canvasDiv, {
       pixelRatio: imageScale,
-      backgroundColor: "white",
+      backgroundColor,
       filter: (node) => {
         return !["cropOverlay", "cropBox"].includes(node.id);
       },
@@ -85,6 +96,9 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
         link.click();
         URL.revokeObjectURL(link.href);
       }, `image/${imageType}`);
+
+      setIsCropping(false);
+      setIsDropdownOpen(false);
     });
   };
 
@@ -107,12 +121,23 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
     scaleMarks.push({ value: i });
   }
 
+  const handleOpen = () => {
+    setIsDropdownOpen(true);
+    fetchCanvasDiv();
+  };
+
+  const handleClose = () => {
+    setIsDropdownOpen(false);
+    setIsDropdownOpen(false);
+  };
+
   return (
     <Menu
       withArrow
       width={340}
-      onOpen={onDownloadClick}
-      onClose={() => setIsCropping(false)}
+      opened={isDropdownOpen}
+      onOpen={handleOpen}
+      onClose={handleClose}
     >
       <Menu.Target>
         <div>{children}</div>
@@ -148,8 +173,8 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
             </Text>
             <div className="downloadmenu-scale-slider-wrapper">
               <Slider
-                value={imageScale}
-                onChange={setImageScale}
+                value={imageScale / scaleMultiplier}
+                onChange={(scale) => setImageScale(scale * scaleMultiplier)}
                 min={1}
                 max={CONSTANTS.MAX_IMAGE_SCALE}
                 step={1}
