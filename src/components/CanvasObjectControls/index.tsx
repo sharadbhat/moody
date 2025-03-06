@@ -5,21 +5,15 @@ import {
   IconLockOpen,
   IconTrash,
 } from "@tabler/icons-react";
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
-import { useState } from "react";
 
 export interface CanvasObjectControlsProps {
   id: string;
-  show: boolean;
   locked: boolean;
 }
 
-const CanvasObjectControls = ({
-  id,
-  show,
-  locked,
-}: CanvasObjectControlsProps) => {
+const CanvasObjectControls = ({ id, locked }: CanvasObjectControlsProps) => {
   const {
     handleBringToFront,
     handleSendToBack,
@@ -27,108 +21,82 @@ const CanvasObjectControls = ({
     handleDeleteCanvasObject,
   } = useCanvasObject();
 
-  if (show) {
-    return (
-      <div style={{ position: "absolute", top: -20, backgroundColor: "white" }}>
-        {!locked && (
-          <>
-            <CanvasObjectControlButton
-              icon={<IconLayersSelected />}
-              arialabel={"Bring to front"}
-              onClick={() => handleBringToFront(id)}
-              isEnabled={false}
-            />
-            <CanvasObjectControlButton
-              icon={<IconLayersSelectedBottom />}
-              arialabel={"Send to back"}
-              onClick={() => handleSendToBack(id)}
-              isEnabled={false}
-            />
-            <CanvasObjectControlButton
-              icon={<IconLockOpen />}
-              arialabel={"Lock object"}
-              onClick={() => handleLockCanvasObject(id, true)}
-              isEnabled={false}
-            />
-            <CanvasObjectControlButton
-              icon={<IconTrash />}
-              arialabel={"Delete object"}
-              onClick={() => handleDeleteCanvasObject(id)}
-              isEnabled={false}
-            />
-          </>
-        )}
-        {locked && (
+  return (
+    <>
+      {!locked && (
+        <ActionIcon.Group>
           <CanvasObjectControlButton
-            icon={<IconLock />}
-            arialabel={"Unlock object"}
+            icon={<IconLayersSelected stroke={1.75} />}
+            label={"Send to back"}
+            onClick={() => handleBringToFront(id)}
+            isEnabled={false}
+          />
+          <CanvasObjectControlButton
+            icon={<IconLayersSelectedBottom stroke={1.75} />}
+            label={"Bring to front"}
+            onClick={() => handleSendToBack(id)}
+            isEnabled={false}
+          />
+          <CanvasObjectControlButton
+            icon={<IconLockOpen stroke={1.75} />}
+            label={"Lock"}
+            onClick={() => handleLockCanvasObject(id, true)}
+            isEnabled={false}
+          />
+          <CanvasObjectControlButton
+            icon={<IconTrash stroke={1.75} />}
+            label={"Delete"}
+            onClick={() => handleDeleteCanvasObject(id)}
+            isEnabled={false}
+          />
+        </ActionIcon.Group>
+      )}
+      {locked && (
+        <ActionIcon.Group>
+          <CanvasObjectControlButton
+            icon={<IconLock stroke={1.75} />}
+            label={"Unlock"}
             onClick={() => handleLockCanvasObject(id, false)}
             isEnabled={true}
           />
-        )}
-      </div>
-    );
-  }
+        </ActionIcon.Group>
+      )}
+    </>
+  );
 };
 
 interface CanvasObjectControlButtonProps {
   icon: React.ReactNode;
   onClick: () => void;
   isEnabled: boolean;
-  arialabel: string;
+  label: string;
 }
 
 const CanvasObjectControlButton = ({
   icon,
   onClick,
   isEnabled,
-  arialabel,
+  label,
 }: CanvasObjectControlButtonProps) => {
-  const [hovered, setHovered] = useState(false);
+  let variant = "subtle";
+  let color = "gray";
 
-  let variant = "transparent";
-  if (hovered) {
-    variant = "light";
-  }
   if (isEnabled) {
     variant = "filled";
-  }
-
-  let color = "gray";
-  if (hovered || isEnabled) {
     color = "blue";
   }
 
-  const onMouseEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setHovered(true);
-  };
-
-  const onMouseMove = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const onMouseLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setHovered(false);
-  };
-
   return (
-    <ActionIcon
-      variant={variant}
-      radius={"xl"}
-      aria-label={arialabel}
-      onClick={onClick}
-      color={color}
-      onMouseEnter={onMouseEnter}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-    >
-      {icon}
-    </ActionIcon>
+    <Tooltip label={label} position="top" withArrow>
+      <ActionIcon
+        variant={variant}
+        aria-label={label}
+        onClick={onClick}
+        color={color}
+      >
+        {icon}
+      </ActionIcon>
+    </Tooltip>
   );
 };
 

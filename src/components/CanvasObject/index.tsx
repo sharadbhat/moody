@@ -5,6 +5,7 @@ import { Rnd } from "react-rnd";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
+import { HoverCard } from "@mantine/core";
 
 const GRID_SIZE = 20;
 
@@ -76,19 +77,23 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       onMouseEnter={() => setIsHovered(!isCropping ? true : false)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
+      <HoverCard
+        closeDelay={250}
+        styles={{
+          dropdown: {
+            padding: 0,
+          },
         }}
+        position="top"
       >
-        <CanvasObjectControls
-          id={canvasObject.id}
-          show={isHovered}
-          locked={canvasObject.locked}
-        />
-      </div>
-      {renderContent()}
+        <HoverCard.Target>{renderContent()}</HoverCard.Target>
+        <HoverCard.Dropdown>
+          <CanvasObjectControls
+            id={canvasObject.id}
+            locked={canvasObject.locked}
+          />
+        </HoverCard.Dropdown>
+      </HoverCard>
     </Rnd>
   );
 };
