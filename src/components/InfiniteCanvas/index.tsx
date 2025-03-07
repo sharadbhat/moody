@@ -3,11 +3,19 @@ import CanvasObject from "../CanvasObject";
 import CropSelectionTool from "./CropSelectionTool";
 import { useInfiniteCanvas } from "../../hooks/useInfiniteCanvas";
 import { useMoodyStore } from "../../utils/store";
+import { patterns } from "../../utils/patterns";
 
 const InfiniteCanvas = () => {
-  const { canvasObjectList, isCropping, backgroundColor } = useMoodyStore(
-    (state) => state
-  );
+  const {
+    canvasObjectList,
+    isCropping,
+    scale,
+    offsetX,
+    offsetY,
+    backgroundPatternId,
+    foregroundColor,
+    backgroundColor,
+  } = useMoodyStore((state) => state);
   const {
     handleDragOver,
     handleDrop,
@@ -16,6 +24,13 @@ const InfiniteCanvas = () => {
     handleMouseMove,
     handleMouseUp,
   } = useInfiniteCanvas();
+
+  const [width, height] = [
+    patterns[backgroundPatternId].width,
+    patterns[backgroundPatternId].height,
+  ];
+  const backgroundSize = `${width * scale * 2}px ${height * scale * 2}px`;
+  const backgroundPosition = `${-offsetX}px ${-offsetY}px`;
 
   return (
     <>
@@ -28,11 +43,29 @@ const InfiniteCanvas = () => {
         onMouseMove={!isCropping ? handleMouseMove : null}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        style={{ backgroundColor }}
+        style={{
+          backgroundColor,
+        }}
       >
-        {canvasObjectList.map((canvasObject) => (
-          <CanvasObject key={canvasObject.id} {...canvasObject} />
-        ))}
+        <div
+          className="infiniteCanvas_pattern"
+          style={{
+            backgroundColor:
+              backgroundPatternId == 0 ? backgroundColor : foregroundColor,
+            backgroundSize,
+            backgroundPosition,
+            maskImage: patterns[backgroundPatternId].svg,
+            maskSize: backgroundSize,
+            maskPosition: backgroundPosition,
+            WebkitMaskImage: patterns[backgroundPatternId].svg,
+            WebkitMaskSize: backgroundSize,
+            WebkitMaskPosition: backgroundPosition,
+          }}
+        >
+          {canvasObjectList.map((canvasObject) => (
+            <CanvasObject key={canvasObject.id} {...canvasObject} />
+          ))}
+        </div>
       </div>
       {isCropping && <CropSelectionTool />}
     </>

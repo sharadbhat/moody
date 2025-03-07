@@ -5,32 +5,50 @@ import {
   ColorPicker,
   Input,
   Menu,
+  ScrollArea,
+  SegmentedControl,
+  SimpleGrid,
   Tooltip,
 } from "@mantine/core";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
 import { useEyeDropper } from "@mantine/hooks";
 import { IconColorPicker, IconPalette } from "@tabler/icons-react";
+import { patterns } from "../../utils/patterns";
 
 const BackgroundColorPicker = () => {
-  const { backgroundColor, setBackgroundColor } = useMoodyStore(
-    (state) => state
-  );
+  const {
+    foregroundColor,
+    backgroundColor,
+    backgroundPatternId,
+    setForegroundColor,
+    setBackgroundColor,
+    setBackgroundPatternId,
+  } = useMoodyStore((state) => state);
 
   const { supported: isEyeDropperSupported, open: openEyeDropper } =
     useEyeDropper();
 
   const [initialBackgroundColor, setInitialBackgroundColor] =
     useState(backgroundColor);
+  const [initialForegroundColor, setInitialForegroundColor] =
+    useState(foregroundColor);
+  const [initialBackgroundPatternId, setInitialBackgroundPatternId] =
+    useState(backgroundPatternId);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [segmentedControlValue, setSegmentedControlValue] =
+    useState("foreground");
 
-  const resetBackgroundColor = () => {
+  const resetSelections = () => {
+    setForegroundColor(initialForegroundColor);
     setBackgroundColor(initialBackgroundColor);
+    setBackgroundPatternId(initialBackgroundPatternId);
     setIsDropdownOpen(false);
   };
 
-  const applyBackgroundColor = () => {
+  const applySelections = () => {
     setIsDropdownOpen(false);
   };
 
@@ -40,7 +58,9 @@ const BackgroundColorPicker = () => {
     } else {
       setIsError(false);
     }
-    setBackgroundColor(color);
+    segmentedControlValue === "foreground"
+      ? setForegroundColor(color)
+      : setBackgroundColor(color);
   };
 
   const handleEyeDropper = async () => {
@@ -52,44 +72,102 @@ const BackgroundColorPicker = () => {
     }
   };
 
+  const handlePatternChange = (id: number) => {
+    setBackgroundPatternId(id);
+  };
+
+  const initializeColors = () => {
+    setInitialBackgroundColor(backgroundColor);
+    setInitialForegroundColor(foregroundColor);
+    setInitialBackgroundPatternId(backgroundPatternId);
+  };
+
   return (
     <Menu
       opened={isDropdownOpen}
       onOpen={() => setIsDropdownOpen(true)}
-      onClose={() => setIsDropdownOpen(false)}
+      onClose={resetSelections}
+      width={300}
     >
       <Menu.Target>
         <div>
           <Tooltip
-            label="Background color"
+            label="Background"
             position="bottom"
             withArrow
             openDelay={500}
             zIndex={1000}
           >
             <ActionIcon
-              variant={"default"}
+              variant={"filled"}
               size={"lg"}
               radius={"md"}
-              onClick={() => setInitialBackgroundColor(backgroundColor)}
+              onClick={initializeColors}
               className="background-color-actionicon"
+              autoContrast
+              color={backgroundColor}
             >
-              <div
-                className="background-color-preview"
-                style={{
-                  backgroundColor: backgroundColor,
-                }}
-              >
-                {<IconPalette stroke={1.5} />}
-              </div>
+              {<IconPalette stroke={1.5} />}
             </ActionIcon>
           </Tooltip>
         </div>
       </Menu.Target>
       <Menu.Dropdown>
         <div className="colorpicker-dropdown">
+          <ScrollArea h={"30vh"}>
+            <SimpleGrid cols={3} spacing={8} verticalSpacing={8}>
+              {Object.entries(patterns).map(([id, pattern]) => (
+                <div key={id}>
+                  <Tooltip
+                    label={pattern.name}
+                    position="top"
+                    withArrow
+                    zIndex={1000}
+                    openDelay={200}
+                  >
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        width: "100%",
+                        height: 60,
+                        backgroundColor: "white",
+                        backgroundImage: pattern.svg.replaceAll(
+                          "FILL_COLOR",
+                          "black"
+                        ),
+                        backgroundPosition: "center",
+                      }}
+                      onClick={() =>
+                        handlePatternChange(id as unknown as number)
+                      }
+                    />
+                  </Tooltip>
+                </div>
+              ))}
+            </SimpleGrid>
+          </ScrollArea>
+          <SegmentedControl
+            data={[
+              {
+                value: "foreground",
+                label: "Foreground",
+              },
+              {
+                value: "background",
+                label: "Background",
+              },
+            ]}
+            value={segmentedControlValue}
+            onChange={setSegmentedControlValue}
+            fullWidth
+          />
           <ColorPicker
-            value={backgroundColor}
+            fullWidth
+            value={
+              segmentedControlValue === "foreground"
+                ? foregroundColor
+                : backgroundColor
+            }
             onChange={handleColorChange}
             swatches={[
               "#2A2D34",
@@ -142,11 +220,12 @@ const BackgroundColorPicker = () => {
               </Tooltip>
             )}
           </div>
+
           <div className="colorpicker-buttons">
-            <Button variant="light" onClick={resetBackgroundColor} fullWidth>
+            <Button variant="light" onClick={resetSelections} fullWidth>
               Cancel
             </Button>
-            <Button onClick={applyBackgroundColor} fullWidth disabled={isError}>
+            <Button onClick={applySelections} fullWidth disabled={isError}>
               Apply
             </Button>
           </div>

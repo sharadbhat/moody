@@ -4,7 +4,6 @@ import CanvasObjectControls from "../CanvasObjectControls";
 import { Rnd } from "react-rnd";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
 import { useMoodyStore } from "../../utils/store";
-import { useState } from "react";
 import { HoverCard } from "@mantine/core";
 
 const GRID_SIZE = 20;
@@ -15,8 +14,6 @@ const CanvasObject = (canvasObject: CanvasObject) => {
   );
 
   const { handleDragStop, handleResizeStop } = useCanvasObject();
-
-  const [isHovered, setIsHovered] = useState(false);
 
   const renderContent = () => {
     if (canvasObject.fileType === FileType.IMAGE) {
@@ -74,8 +71,6 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       }}
       dragGrid={[scaledGridSize, scaledGridSize]}
       resizeGrid={[scaledGridSize, scaledGridSize]}
-      onMouseEnter={() => setIsHovered(!isCropping ? true : false)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <HoverCard
         closeDelay={250}
