@@ -27,6 +27,7 @@ export const useCanvasObject = () => {
     setCanvasObjectLock,
     setCanvasObjectLayerBack,
     setCanvasObjectLayerFront,
+    setCanvasObjectLockAspectRatio,
   } = useMoodyStore((state) => state);
 
   const createImageCanvasObject = ({
@@ -101,6 +102,13 @@ export const useCanvasObject = () => {
     setCanvasObjectLayerFront(id);
   };
 
+  const handleLockCanvasObjectAspectRatio = (
+    id: string,
+    lockState: boolean
+  ) => {
+    setCanvasObjectLockAspectRatio(id, lockState);
+  };
+
   return {
     handleNewCanvasObject,
     handleDragStop,
@@ -109,5 +117,6 @@ export const useCanvasObject = () => {
     handleLockCanvasObject,
     handleSendToBack,
     handleBringToFront,
+    handleLockCanvasObjectAspectRatio,
   };
 };

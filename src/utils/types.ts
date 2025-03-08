@@ -39,7 +39,7 @@ export interface MoodyStore {
   boardName: string;
   canvasObjectList: CanvasObject[];
   backgroundPatternId: number;
-  foregroundColor: string;
+  patternColor: string;
   backgroundColor: string;
   scale: number;
   offsetX: number;
@@ -62,7 +62,7 @@ export interface MoodyStore {
   ) => void;
   setBoardName: (boardName: string) => void;
   setBackgroundPatternId: (backgroundPatternId: number) => void;
-  setForegroundColor: (color: string) => void;
+  setPatternColor: (color: string) => void;
   setBackgroundColor: (color: string) => void;
   setScale: (scale: number) => void;
   setOffset: (offsetX: number, offsetY: number) => void;
@@ -79,6 +79,7 @@ export interface MoodyStore {
   ) => void;
   setCanvasObjectLayerBack: (id: string) => void;
   setCanvasObjectLayerFront: (id: string) => void;
+  setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
 }
 
 export interface DrawImageProps {

@@ -85,6 +85,7 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         <HoverCard.Dropdown>
           <CanvasObjectControls
             id={canvasObject.id}
+            aspectRatioLocked={canvasObject.lockAspectRatio}
             locked={canvasObject.locked}
           />
         </HoverCard.Dropdown>

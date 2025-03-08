@@ -13,15 +13,15 @@ import {
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
 import { useEyeDropper } from "@mantine/hooks";
-import { IconColorPicker, IconPalette } from "@tabler/icons-react";
+import { IconColorPicker, IconHash, IconPalette } from "@tabler/icons-react";
 import { patterns } from "../../utils/patterns";
 
 const BackgroundColorPicker = () => {
   const {
-    foregroundColor,
+    patternColor,
     backgroundColor,
     backgroundPatternId,
-    setForegroundColor,
+    setPatternColor,
     setBackgroundColor,
     setBackgroundPatternId,
   } = useMoodyStore((state) => state);
@@ -31,18 +31,15 @@ const BackgroundColorPicker = () => {
 
   const [initialBackgroundColor, setInitialBackgroundColor] =
     useState(backgroundColor);
-  const [initialForegroundColor, setInitialForegroundColor] =
-    useState(foregroundColor);
+  const [initialPatternColor, setInitialPatternColor] = useState(patternColor);
   const [initialBackgroundPatternId, setInitialBackgroundPatternId] =
     useState(backgroundPatternId);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [segmentedControlValue, setSegmentedControlValue] =
-    useState("foreground");
+  const [segmentedControlValue, setSegmentedControlValue] = useState("pattern");
 
   const resetSelections = () => {
-    setForegroundColor(initialForegroundColor);
+    setPatternColor(initialPatternColor);
     setBackgroundColor(initialBackgroundColor);
     setBackgroundPatternId(initialBackgroundPatternId);
     setIsDropdownOpen(false);
@@ -53,13 +50,12 @@ const BackgroundColorPicker = () => {
   };
 
   const handleColorChange = (color: string) => {
-    if (!/^#(?:[0-9a-fA-F]{3}){1,2}$/i.test(color)) {
-      setIsError(true);
-    } else {
-      setIsError(false);
+    if (color.length <= 6 && !color.startsWith("#")) {
+      color = `#${color}`;
     }
-    segmentedControlValue === "foreground"
-      ? setForegroundColor(color)
+
+    segmentedControlValue === "pattern"
+      ? setPatternColor(color)
       : setBackgroundColor(color);
   };
 
@@ -78,7 +74,7 @@ const BackgroundColorPicker = () => {
 
   const initializeColors = () => {
     setInitialBackgroundColor(backgroundColor);
-    setInitialForegroundColor(foregroundColor);
+    setInitialPatternColor(patternColor);
     setInitialBackgroundPatternId(backgroundPatternId);
   };
 
@@ -99,13 +95,11 @@ const BackgroundColorPicker = () => {
             zIndex={1000}
           >
             <ActionIcon
-              variant={"filled"}
+              variant={"default"}
               size={"lg"}
               radius={"md"}
               onClick={initializeColors}
-              className="background-color-actionicon"
               autoContrast
-              color={backgroundColor}
             >
               {<IconPalette stroke={1.5} />}
             </ActionIcon>
@@ -114,43 +108,11 @@ const BackgroundColorPicker = () => {
       </Menu.Target>
       <Menu.Dropdown>
         <div className="colorpicker-dropdown">
-          <ScrollArea h={"30vh"}>
-            <SimpleGrid cols={3} spacing={8} verticalSpacing={8}>
-              {Object.entries(patterns).map(([id, pattern]) => (
-                <div key={id}>
-                  <Tooltip
-                    label={pattern.name}
-                    position="top"
-                    withArrow
-                    zIndex={1000}
-                    openDelay={200}
-                  >
-                    <div
-                      style={{
-                        cursor: "pointer",
-                        width: "100%",
-                        height: 60,
-                        backgroundColor: "white",
-                        backgroundImage: pattern.svg.replaceAll(
-                          "FILL_COLOR",
-                          "black"
-                        ),
-                        backgroundPosition: "center",
-                      }}
-                      onClick={() =>
-                        handlePatternChange(id as unknown as number)
-                      }
-                    />
-                  </Tooltip>
-                </div>
-              ))}
-            </SimpleGrid>
-          </ScrollArea>
           <SegmentedControl
             data={[
               {
-                value: "foreground",
-                label: "Foreground",
+                value: "pattern",
+                label: "Pattern",
               },
               {
                 value: "background",
@@ -164,10 +126,11 @@ const BackgroundColorPicker = () => {
           <ColorPicker
             fullWidth
             value={
-              segmentedControlValue === "foreground"
-                ? foregroundColor
+              segmentedControlValue === "pattern"
+                ? patternColor
                 : backgroundColor
             }
+            format="rgba"
             onChange={handleColorChange}
             swatches={[
               "#2A2D34",
@@ -188,9 +151,9 @@ const BackgroundColorPicker = () => {
           />
           <div className="colorpicker-input-wrapper">
             <Input
-              value={backgroundColor.toUpperCase()}
+              placeholder="Enter a color hex code"
+              leftSection={<IconHash stroke={1.5} />}
               onChange={(e) => handleColorChange(e.target.value)}
-              error={isError}
               className="colorpicker-input"
             />
             {isEyeDropperSupported && (
@@ -220,12 +183,49 @@ const BackgroundColorPicker = () => {
               </Tooltip>
             )}
           </div>
+          <ScrollArea h={"30vh"}>
+            <SimpleGrid cols={3} spacing={8} verticalSpacing={8}>
+              {Object.entries(patterns).map(([id, pattern]) => (
+                <div key={id}>
+                  <Tooltip
+                    label={pattern.name}
+                    position="top"
+                    withArrow
+                    zIndex={1000}
+                    openDelay={200}
+                  >
+                    <div
+                      className="pattern-background"
+                      style={{
+                        border:
+                          backgroundPatternId.toString() == id
+                            ? "2px solid var(--mantine-primary-color-3)"
+                            : null,
+                      }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor: id === "0" ? "white" : null,
+                          maskImage: pattern.svg,
+                          WebkitMaskImage: pattern.svg,
+                        }}
+                        className="pattern-div"
+                        onClick={() =>
+                          handlePatternChange(id as unknown as number)
+                        }
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
+              ))}
+            </SimpleGrid>
+          </ScrollArea>
 
           <div className="colorpicker-buttons">
             <Button variant="light" onClick={resetSelections} fullWidth>
               Cancel
             </Button>
-            <Button onClick={applySelections} fullWidth disabled={isError}>
+            <Button onClick={applySelections} fullWidth>
               Apply
             </Button>
           </div>

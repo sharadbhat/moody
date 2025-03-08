@@ -1,4 +1,6 @@
 import {
+  IconAspectRatio,
+  IconAspectRatioOff,
   IconLayersSelected,
   IconLayersSelectedBottom,
   IconLock,
@@ -10,15 +12,21 @@ import { useCanvasObject } from "../../hooks/useCanvasObject";
 
 export interface CanvasObjectControlsProps {
   id: string;
+  aspectRatioLocked: boolean;
   locked: boolean;
 }
 
-const CanvasObjectControls = ({ id, locked }: CanvasObjectControlsProps) => {
+const CanvasObjectControls = ({
+  id,
+  aspectRatioLocked,
+  locked,
+}: CanvasObjectControlsProps) => {
   const {
     handleBringToFront,
     handleSendToBack,
     handleLockCanvasObject,
     handleDeleteCanvasObject,
+    handleLockCanvasObjectAspectRatio,
   } = useCanvasObject();
 
   return (
@@ -28,13 +36,29 @@ const CanvasObjectControls = ({ id, locked }: CanvasObjectControlsProps) => {
           <CanvasObjectControlButton
             icon={<IconLayersSelected stroke={1.75} />}
             label={"Send to back"}
-            onClick={() => handleBringToFront(id)}
+            onClick={() => handleSendToBack(id)}
             isEnabled={false}
           />
           <CanvasObjectControlButton
             icon={<IconLayersSelectedBottom stroke={1.75} />}
             label={"Bring to front"}
-            onClick={() => handleSendToBack(id)}
+            onClick={() => handleBringToFront(id)}
+            isEnabled={false}
+          />
+          <CanvasObjectControlButton
+            label={
+              aspectRatioLocked ? "Unlock aspect ratio" : "Lock aspect ratio"
+            }
+            icon={
+              aspectRatioLocked ? (
+                <IconAspectRatioOff stroke={1.75} />
+              ) : (
+                <IconAspectRatio stroke={1.75} />
+              )
+            }
+            onClick={() =>
+              handleLockCanvasObjectAspectRatio(id, !aspectRatioLocked)
+            }
             isEnabled={false}
           />
           <CanvasObjectControlButton

@@ -1,21 +1,22 @@
 import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
 import { useMoodyStore } from "../utils/store";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export const useInfiniteCanvas = () => {
   const scale = useMoodyStore((state) => state.scale);
-  const offsetX = useMoodyStore((state) => state.offsetX);
-  const offsetY = useMoodyStore((state) => state.offsetY);
-
   const setScale = useMoodyStore((state) => state.setScale);
+
+  const offsetXRef = useRef(useMoodyStore.getState().offsetX);
+  const offsetYRef = useRef(useMoodyStore.getState().offsetY);
   const setOffset = useMoodyStore((state) => state.setOffset);
 
   const { handleNewCanvasObject } = useCanvasObject();
 
-  const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
   const [isPanning, setIsPanning] = useState(false);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const animationFrameRef = useRef(null);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -23,14 +24,12 @@ export const useInfiniteCanvas = () => {
 
   const handleDrop = (event) => {
     event.preventDefault();
-
     const files = event.dataTransfer?.files;
     const url = event.dataTransfer?.getData("URL");
 
-    if (files.length !== 0) {
+    if (files.length > 0) {
       let prevX = 0;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      for (let file of files) {
         if (file.type.startsWith("image/")) {
           const reader = new FileReader();
           reader.onloadend = () => {
@@ -65,20 +64,23 @@ export const useInfiniteCanvas = () => {
     else if (newScale > 3) newScale = 3;
     else if (newScale > 0.95 && newScale < 1.05) newScale = 1;
 
-    const worldX = event.clientX / scale + offsetX;
-    const worldY = event.clientY / scale + offsetY;
+    const worldX = event.clientX / scale + offsetXRef.current;
+    const worldY = event.clientY / scale + offsetYRef.current;
 
     // Compute new offsets to keep zoom centered at mouse
     const newOffsetX = worldX - event.clientX / newScale;
     const newOffsetY = worldY - event.clientY / newScale;
+
+    offsetXRef.current = newOffsetX;
+    offsetYRef.current = newOffsetY;
 
     setOffset(newOffsetX, newOffsetY);
     setScale(newScale);
   };
 
   const handleMouseDown = (event) => {
-    setStartX(event.clientX);
-    setStartY(event.clientY);
+    startXRef.current = event.clientX;
+    startYRef.current = event.clientY;
 
     setIsPanning(true);
   };
@@ -88,19 +90,23 @@ export const useInfiniteCanvas = () => {
       return;
     }
 
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
+    if (!animationFrameRef.current) {
+      animationFrameRef.current = requestAnimationFrame(() => {
+        const deltaX = (event.clientX - startXRef.current) / scale;
+        const deltaY = (event.clientY - startYRef.current) / scale;
 
-    setOffset(offsetX - deltaX / scale, offsetY - deltaY / scale);
+        offsetXRef.current -= deltaX;
+        offsetYRef.current -= deltaY;
+        setOffset(offsetXRef.current, offsetYRef.current);
 
-    setStartX(event.clientX);
-    setStartY(event.clientY);
+        startXRef.current = event.clientX;
+        startYRef.current = event.clientY;
+        animationFrameRef.current = null;
+      });
+    }
   };
 
-  const handleMouseUp = (_event) => {
-    setStartX(0);
-    setStartY(0);
-
+  const handleMouseUp = () => {
     setIsPanning(false);
   };
 

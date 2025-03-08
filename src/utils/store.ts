@@ -6,7 +6,7 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   boardName: "Board name",
   canvasObjectList: [],
   backgroundPatternId: 0,
-  foregroundColor: "#000000",
+  patternColor: "#000000",
   backgroundColor: "#ffffff",
   scale: 1,
   offsetX: 0,
@@ -54,9 +54,9 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       backgroundPatternId,
     })),
 
-  setForegroundColor: (foregroundColor) =>
+  setPatternColor: (patternColor) =>
     set(() => ({
-      foregroundColor,
+      patternColor,
     })),
 
   setBackgroundColor: (backgroundColor) =>
@@ -157,4 +157,13 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
         canvasObjectList: newList,
       };
     }),
+
+  setCanvasObjectLockAspectRatio: (id, lockAspectRatio) =>
+    set((state) => ({
+      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
+        canvasObject.id === id
+          ? { ...canvasObject, lockAspectRatio: lockAspectRatio }
+          : canvasObject
+      ),
+    })),
 }));
