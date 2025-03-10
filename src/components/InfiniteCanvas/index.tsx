@@ -64,7 +64,6 @@ const InfiniteCanvas = () => {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         />
-
         {canvasObjectList.map((canvasObject) => (
           <CanvasObject key={canvasObject.id} {...canvasObject} />
         ))}

@@ -21,7 +21,7 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         <img
           className={"canvasImage"}
           src={canvasObject.fileContent}
-          onDrag={(e) => e.preventDefault()}
+          draggable={false}
         />
       );
     }
@@ -71,6 +71,15 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       }}
       dragGrid={[scaledGridSize, scaledGridSize]}
       resizeGrid={[scaledGridSize, scaledGridSize]}
+      onDragOver={(e) => {
+        e.preventDefault();
+      }}
+      onDragEnter={(e) => {
+        e.preventDefault();
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+      }}
     >
       <HoverCard
         closeDelay={250}
