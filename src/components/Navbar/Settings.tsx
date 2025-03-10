@@ -15,14 +15,47 @@ import {
 } from "@tabler/icons-react";
 import { CONSTANTS } from "../../utils/constants";
 import DownloadMenu from "./DownloadMenu";
-import { useFullscreen } from "@mantine/hooks";
+import { useFileDialog, useFullscreen } from "@mantine/hooks";
 import { useMoodyStore } from "../../utils/store";
 import BackgroundColorPicker from "./BackgroundColorPicker";
+import { useEffect } from "react";
+import { useCanvasObject } from "../../hooks/useCanvasObject";
+import { FileType } from "../../utils/types";
 
 const Settings = () => {
   const { snapToGrid, toggleSnapToGrid } = useMoodyStore((state) => state);
 
   const { toggle, fullscreen } = useFullscreen();
+  const { handleNewCanvasObject } = useCanvasObject();
+
+  const fileDialog = useFileDialog({
+    accept: "*.jpg, *.jpeg, *.png",
+    multiple: true,
+  });
+
+  const selectedFiles = Array.from(fileDialog.files || []);
+
+  useEffect(() => {
+    if (selectedFiles.length > 0) {
+      let prevX = 0;
+      for (let file of selectedFiles) {
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            handleNewCanvasObject({
+              fileType: FileType.IMAGE,
+              fileContent: reader.result as string,
+              x: window.innerWidth / 2 - 50 + prevX,
+              y: window.innerHeight / 2 - 50,
+            });
+            prevX += 100; // Offset images by 100px if multiple dropped
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+    fileDialog.reset();
+  }, [selectedFiles]);
 
   return (
     <div className="settings">
@@ -31,7 +64,7 @@ const Settings = () => {
           title="Add image"
           icon={<IconPhoto stroke={1.5} />}
           isEnabled={false}
-          onClick={() => {}}
+          onClick={fileDialog.open}
           showAddIcon
         />
         <SettingsButton
