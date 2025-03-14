@@ -103,14 +103,14 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       ),
     })),
 
-  setCanvasObjectSizeAndPosition: (id, widthDelta, heightDelta, x, y) =>
+  setCanvasObjectSizeAndPosition: (id, width, height, x, y) =>
     set((state) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id
           ? {
               ...canvasObject,
-              width: canvasObject.width + widthDelta,
-              height: canvasObject.height + heightDelta,
+              width: width,
+              height: height,
               x,
               y,
             }
@@ -163,6 +163,15 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id
           ? { ...canvasObject, lockAspectRatio: lockAspectRatio }
+          : canvasObject
+      ),
+    })),
+
+  setCanvasObjectRotationAngle: (id, rotationAngle) =>
+    set((state) => ({
+      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
+        canvasObject.id === id
+          ? { ...canvasObject, rotationAngle }
           : canvasObject
       ),
     })),

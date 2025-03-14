@@ -50,6 +50,7 @@ export const useCanvasObject = () => {
       y: y / scale + offsetY - height / 2,
       width,
       height,
+      rotationAngle: 0,
       fileType: FileType.IMAGE,
       fileContent: imageObject?.src || "",
       lockAspectRatio: true,

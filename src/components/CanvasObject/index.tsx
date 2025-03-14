@@ -1,25 +1,20 @@
 import "./index.css";
 import { type CanvasObject, FileType } from "../../utils/types";
 import CanvasObjectControls from "../CanvasObjectControls";
-import { Rnd } from "react-rnd";
-import { useCanvasObject } from "../../hooks/useCanvasObject";
 import { useMoodyStore } from "../../utils/store";
 import { HoverCard } from "@mantine/core";
-
-const GRID_SIZE = 20;
+import useTransformObject from "../../hooks/useTransformObject";
 
 const CanvasObject = (canvasObject: CanvasObject) => {
-  const { scale, offsetX, offsetY, snapToGrid, isCropping } = useMoodyStore(
-    (state) => state
-  );
+  const { Handles, handleDragDown } = useTransformObject(canvasObject);
 
-  const { handleDragStop, handleResizeStop } = useCanvasObject();
+  const { scale, offsetX, offsetY } = useMoodyStore((state) => state);
 
   const renderContent = () => {
     if (canvasObject.fileType === FileType.IMAGE) {
       return (
         <img
-          className={"canvasImage"}
+          className="canvasImage"
           src={canvasObject.fileContent}
           draggable={false}
         />
@@ -27,68 +22,23 @@ const CanvasObject = (canvasObject: CanvasObject) => {
     }
   };
 
-  const scaledGridSize = snapToGrid ? GRID_SIZE * scale : 1;
-
   return (
-    <Rnd
-      key={canvasObject.id}
-      position={{
-        x: (canvasObject.x - offsetX) * scale,
-        y: (canvasObject.y - offsetY) * scale,
-      }}
-      size={{
+    <div
+      style={{
+        position: "absolute",
         width: canvasObject.width * scale,
         height: canvasObject.height * scale,
+        transform: `translate(${(canvasObject.x - offsetX) * scale}px, ${
+          (canvasObject.y - offsetY) * scale
+        }px) rotate(${canvasObject.rotationAngle || 0}deg)`,
       }}
-      lockAspectRatio={canvasObject.lockAspectRatio}
-      disableDragging={!isCropping ? canvasObject.locked : true}
-      enableResizing={!isCropping ? !canvasObject.locked : false}
-      onDragStart={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-      onMouseDown={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-      onDragStop={(_e, d) => {
-        handleDragStop({
-          id: canvasObject.id,
-          x: d.x / scale + offsetX,
-          y: d.y / scale + offsetY,
-        });
-      }}
-      onResizeStop={(_e, _direction, _ref, delta, position) => {
-        handleResizeStop({
-          id: canvasObject.id,
-          delta: {
-            width: delta.width / scale,
-            height: delta.height / scale,
-          },
-          x: position.x / scale + offsetX,
-          y: position.y / scale + offsetY,
-        });
-      }}
-      dragGrid={[scaledGridSize, scaledGridSize]}
-      resizeGrid={[scaledGridSize, scaledGridSize]}
-      onDragOver={(e) => {
-        e.preventDefault();
-      }}
-      onDragEnter={(e) => {
-        e.preventDefault();
-      }}
-      onDrop={(e) => {
-        e.preventDefault();
-      }}
+      onMouseDown={handleDragDown}
     >
+      <Handles />
       <HoverCard
         closeDelay={250}
-        styles={{
-          dropdown: {
-            padding: 0,
-          },
-        }}
-        position="top"
+        styles={{ dropdown: { padding: 0 } }}
+        position="top-end"
       >
         <HoverCard.Target>{renderContent()}</HoverCard.Target>
         <HoverCard.Dropdown>
@@ -99,7 +49,7 @@ const CanvasObject = (canvasObject: CanvasObject) => {
           />
         </HoverCard.Dropdown>
       </HoverCard>
-    </Rnd>
+    </div>
   );
 };
 

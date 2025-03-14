@@ -9,6 +9,7 @@ export interface CanvasObject {
   y: number;
   width: number;
   height: number;
+  rotationAngle: number;
   fileType: FileType;
   fileContent: string;
   locked: boolean;
@@ -72,14 +73,15 @@ export interface MoodyStore {
   setCanvasObjectPosition: (id: string, x: number, y: number) => void;
   setCanvasObjectSizeAndPosition: (
     id: string,
-    widthDelta: number,
-    heightDelta: number,
+    width: number,
+    height: number,
     x: number,
     y: number
   ) => void;
   setCanvasObjectLayerBack: (id: string) => void;
   setCanvasObjectLayerFront: (id: string) => void;
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
+  setCanvasObjectRotationAngle: (id: string, rotationAngle: number) => void;
 }
 
 export interface DrawImageProps {

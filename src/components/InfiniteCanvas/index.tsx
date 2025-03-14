@@ -17,14 +17,8 @@ const InfiniteCanvas = () => {
     patternColor,
     backgroundColor,
   } = useMoodyStore((state) => state);
-  const {
-    handleDragOver,
-    handleDrop,
-    handleWheelScroll,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-  } = useInfiniteCanvas();
+  const { handleDragOver, handleDrop, handleWheelScroll, handleMouseDown } =
+    useInfiniteCanvas();
 
   const [width, height] = [
     patterns[backgroundPatternId].width,
@@ -60,9 +54,6 @@ const InfiniteCanvas = () => {
           onDrop={handleDrop}
           onWheel={!isCropping ? handleWheelScroll : null}
           onMouseDown={!isCropping ? handleMouseDown : null}
-          onMouseMove={!isCropping ? handleMouseMove : null}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
         />
         {canvasObjectList.map((canvasObject) => (
           <CanvasObject key={canvasObject.id} {...canvasObject} />

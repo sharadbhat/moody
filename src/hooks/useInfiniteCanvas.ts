@@ -13,7 +13,7 @@ export const useInfiniteCanvas = () => {
 
   const { handleNewCanvasObject } = useCanvasObject();
 
-  const [isPanning, setIsPanning] = useState(false);
+  const isPanning = useRef(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const animationFrameRef = useRef(null);
@@ -67,7 +67,6 @@ export const useInfiniteCanvas = () => {
     const worldX = event.clientX / scale + offsetXRef.current;
     const worldY = event.clientY / scale + offsetYRef.current;
 
-    // Compute new offsets to keep zoom centered at mouse
     const newOffsetX = worldX - event.clientX / newScale;
     const newOffsetY = worldY - event.clientY / newScale;
 
@@ -82,11 +81,14 @@ export const useInfiniteCanvas = () => {
     startXRef.current = event.clientX;
     startYRef.current = event.clientY;
 
-    setIsPanning(true);
+    isPanning.current = true;
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleMouseMove = (event) => {
-    if (!isPanning) {
+    if (!isPanning.current) {
       return;
     }
 
@@ -107,7 +109,10 @@ export const useInfiniteCanvas = () => {
   };
 
   const handleMouseUp = () => {
-    setIsPanning(false);
+    isPanning.current = false;
+
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
   };
 
   return {
@@ -115,7 +120,5 @@ export const useInfiniteCanvas = () => {
     handleDrop,
     handleWheelScroll,
     handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
   };
 };
