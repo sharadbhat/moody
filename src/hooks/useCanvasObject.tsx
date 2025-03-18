@@ -44,12 +44,23 @@ export const useCanvasObject = () => {
       height = MAX_DIMENSION;
     }
 
+    const x1 = x - width / 2;
+    const y1 = y - height / 2;
+
     return {
       id: `${Date.now()}`,
-      x: x / scale + offsetX - width / 2,
-      y: y / scale + offsetY - height / 2,
-      width,
-      height,
+      originalPoints: {
+        point1: { x: x1, y: y1 },
+        point2: { x: x1 + width, y: y1 },
+        point3: { x: x1 + width, y: y1 + height },
+        point4: { x: x1, y: y1 + height },
+      },
+      transformedPoints: {
+        point1: { x: x1, y: y1 },
+        point2: { x: x1 + width, y: y1 },
+        point3: { x: x1 + width, y: y1 + height },
+        point4: { x: x1, y: y1 + height },
+      },
       rotationAngle: 0,
       fileType: FileType.IMAGE,
       fileContent: imageObject?.src || "",

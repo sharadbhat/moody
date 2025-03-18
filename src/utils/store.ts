@@ -11,6 +11,7 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   scale: 1,
   offsetX: 0,
   offsetY: 0,
+  lastMousePosition: { x: 0, y: 0 },
 
   // Global settings
   snapToGrid: false,
@@ -40,6 +41,13 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
         y,
         width,
         height,
+      },
+    })),
+  setLastMousePosition: (position) =>
+    set(() => ({
+      lastMousePosition: {
+        x: position.x,
+        y: position.y,
       },
     })),
 
@@ -96,10 +104,15 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       ),
     })),
 
-  setCanvasObjectPosition: (id, x, y) =>
+  setCanvasObjectPosition: (id, points) =>
     set((state) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
-        canvasObject.id === id ? { ...canvasObject, x, y } : canvasObject
+        canvasObject.id === id
+          ? {
+              ...canvasObject,
+              transformedPoints: points,
+            }
+          : canvasObject
       ),
     })),
 

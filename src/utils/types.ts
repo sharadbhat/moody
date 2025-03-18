@@ -3,12 +3,22 @@ export enum FileType {
   TEXT = "TEXT",
 }
 
-export interface CanvasObject {
-  id: string;
+export type Point = {
   x: number;
   y: number;
-  width: number;
-  height: number;
+};
+
+export type CanvasObjectPoints = {
+  point1: Point;
+  point2: Point;
+  point3: Point;
+  point4: Point;
+};
+
+export interface CanvasObject {
+  id: string;
+  originalPoints: CanvasObjectPoints;
+  transformedPoints: CanvasObjectPoints;
   rotationAngle: number;
   fileType: FileType;
   fileContent: string;
@@ -45,6 +55,7 @@ export interface MoodyStore {
   scale: number;
   offsetX: number;
   offsetY: number;
+  lastMousePosition: Point;
   isCropping: boolean;
   cropDimensions: {
     x: number;
@@ -61,6 +72,7 @@ export interface MoodyStore {
     width: number,
     height: number
   ) => void;
+  setLastMousePosition: (position: Point) => void;
   setBoardName: (boardName: string) => void;
   setBackgroundPatternId: (backgroundPatternId: number) => void;
   setPatternColor: (color: string) => void;
@@ -70,7 +82,7 @@ export interface MoodyStore {
   addCanvasObject: (canvasObject: CanvasObject) => void;
   removeCanvasObject: (canvasObjectId: string) => void;
   setCanvasObjectLock: (canvasObjectId: string, lockState: boolean) => void;
-  setCanvasObjectPosition: (id: string, x: number, y: number) => void;
+  setCanvasObjectPosition: (id: string, points: CanvasObjectPoints) => void;
   setCanvasObjectSizeAndPosition: (
     id: string,
     width: number,

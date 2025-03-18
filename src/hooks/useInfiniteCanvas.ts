@@ -1,18 +1,16 @@
 import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
 import { useMoodyStore } from "../utils/store";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 export const useInfiniteCanvas = () => {
-  const scale = useMoodyStore((state) => state.scale);
-  const setScale = useMoodyStore((state) => state.setScale);
-
-  const offsetXRef = useRef(useMoodyStore.getState().offsetX);
-  const offsetYRef = useRef(useMoodyStore.getState().offsetY);
-  const setOffset = useMoodyStore((state) => state.setOffset);
+  const { scale, offsetX, offsetY, setScale, setOffset, setLastMousePosition } =
+    useMoodyStore((state) => state);
 
   const { handleNewCanvasObject } = useCanvasObject();
 
+  const offsetXRef = useRef(offsetX);
+  const offsetYRef = useRef(offsetY);
   const isPanning = useRef(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
@@ -75,6 +73,7 @@ export const useInfiniteCanvas = () => {
 
     setOffset(newOffsetX, newOffsetY);
     setScale(newScale);
+    setLastMousePosition({ x: event.clientX, y: event.clientY });
   };
 
   const handleMouseDown = (event) => {
@@ -94,8 +93,8 @@ export const useInfiniteCanvas = () => {
 
     if (!animationFrameRef.current) {
       animationFrameRef.current = requestAnimationFrame(() => {
-        const deltaX = (event.clientX - startXRef.current) / scale;
-        const deltaY = (event.clientY - startYRef.current) / scale;
+        const deltaX = event.clientX - startXRef.current;
+        const deltaY = event.clientY - startYRef.current;
 
         offsetXRef.current -= deltaX;
         offsetYRef.current -= deltaY;
