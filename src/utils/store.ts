@@ -110,22 +110,7 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
         canvasObject.id === id
           ? {
               ...canvasObject,
-              transformedPoints: points,
-            }
-          : canvasObject
-      ),
-    })),
-
-  setCanvasObjectSizeAndPosition: (id, width, height, x, y) =>
-    set((state) => ({
-      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
-        canvasObject.id === id
-          ? {
-              ...canvasObject,
-              width: width,
-              height: height,
-              x,
-              y,
+              points: points,
             }
           : canvasObject
       ),

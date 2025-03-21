@@ -1,13 +1,23 @@
 import "./index.css";
 import { type CanvasObject, FileType } from "../../utils/types";
 import CanvasObjectControls from "../CanvasObjectControls";
-import { HoverCard } from "@mantine/core";
+import { Popover } from "@mantine/core";
 import useTransformObject from "../../hooks/useTransformObject";
+import { useState } from "react";
+import { useClickOutside, useHover, useMergedRef } from "@mantine/hooks";
+import { CONSTANTS } from "../../utils/constants";
 
 const CanvasObject = (canvasObject: CanvasObject) => {
-  const { Handles, handleDragDown } = useTransformObject(canvasObject);
+  const { Handles, handleDragDown, isDragging, isResizing, isRotating } =
+    useTransformObject(canvasObject);
 
-  const { transformedPoints: points } = canvasObject;
+  const [isOpened, setIsOpened] = useState(false);
+
+  const clickOutsideRef = useClickOutside(() => setIsOpened(false));
+  const { hovered, ref: hoverRef } = useHover();
+  const mergedRef = useMergedRef(hoverRef, clickOutsideRef);
+
+  const { points } = canvasObject;
 
   const width = Math.sqrt(
     Math.pow(points.point2.x - points.point1.x, 2) +
@@ -38,9 +48,15 @@ const CanvasObject = (canvasObject: CanvasObject) => {
     if (canvasObject.fileType === FileType.IMAGE) {
       return (
         <img
-          className="canvasImage"
+          className={`canvasImage ${
+            isDragging || isResizing || isRotating || hovered || isOpened
+              ? "canvasImageSelected"
+              : ""
+          }`}
           src={canvasObject.fileContent}
           draggable={false}
+          onClick={() => setIsOpened(!isOpened)}
+          onMouseDown={!canvasObject.locked && handleDragDown}
         />
       );
     }
@@ -54,25 +70,31 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         width: width,
         height: height,
         transform: `translate(${translateX}px, ${translateY}px) rotate(${angleInDegrees}deg)`,
-        cursor: canvasObject.locked ? "default" : "move",
+        cursor: canvasObject.locked
+          ? CONSTANTS.CURSOR_DEFAULT
+          : CONSTANTS.CURSOR_MOVE,
       }}
-      onMouseDown={!canvasObject.locked && handleDragDown}
+      ref={mergedRef}
     >
-      {!canvasObject.locked && <Handles />}
-      <HoverCard
-        closeDelay={250}
+      {!canvasObject.locked && (
+        <Handles show={isDragging || isResizing || isRotating || hovered} />
+      )}
+      <Popover
+        opened={isOpened}
+        onClose={() => setIsOpened(false)}
+        position={canvasObject.locked ? "top" : "top-end"}
         styles={{ dropdown: { padding: 0 } }}
-        position="top-end"
+        withinPortal={false}
       >
-        <HoverCard.Target>{renderContent()}</HoverCard.Target>
-        <HoverCard.Dropdown>
+        <Popover.Target>{renderContent()}</Popover.Target>
+        <Popover.Dropdown>
           <CanvasObjectControls
             id={canvasObject.id}
             aspectRatioLocked={canvasObject.lockAspectRatio}
             locked={canvasObject.locked}
           />
-        </HoverCard.Dropdown>
-      </HoverCard>
+        </Popover.Dropdown>
+      </Popover>
     </div>
   );
 };

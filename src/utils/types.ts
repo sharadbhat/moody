@@ -17,8 +17,7 @@ export type CanvasObjectPoints = {
 
 export interface CanvasObject {
   id: string;
-  originalPoints: CanvasObjectPoints;
-  transformedPoints: CanvasObjectPoints;
+  points: CanvasObjectPoints;
   rotationAngle: number;
   fileType: FileType;
   fileContent: string;
@@ -29,19 +28,6 @@ export interface CanvasObject {
 export interface CreateAndAddCanvasObjectProps {
   fileType: FileType;
   fileContent: string;
-  x: number;
-  y: number;
-}
-
-export interface HandleDragStopProps {
-  id: string;
-  x: number;
-  y: number;
-}
-
-export interface HandleResizeStopProps {
-  id: string;
-  delta: { width: number; height: number };
   x: number;
   y: number;
 }
@@ -83,13 +69,6 @@ export interface MoodyStore {
   removeCanvasObject: (canvasObjectId: string) => void;
   setCanvasObjectLock: (canvasObjectId: string, lockState: boolean) => void;
   setCanvasObjectPosition: (id: string, points: CanvasObjectPoints) => void;
-  setCanvasObjectSizeAndPosition: (
-    id: string,
-    width: number,
-    height: number,
-    x: number,
-    y: number
-  ) => void;
   setCanvasObjectLayerBack: (id: string) => void;
   setCanvasObjectLayerFront: (id: string) => void;
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;

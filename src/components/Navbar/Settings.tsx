@@ -149,6 +149,11 @@ const SettingsButton = ({
           size={"lg"}
           radius={"md"}
           onClick={onClick}
+          styles={{
+            root: {
+              cursor: CONSTANTS.CURSOR_POINTER,
+            },
+          }}
         >
           {icon}
         </ActionIcon>
@@ -178,7 +183,15 @@ const SettingsButton = ({
 
 const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Menu width={200} withArrow>
+    <Menu
+      width={200}
+      withArrow
+      styles={{
+        item: {
+          cursor: CONSTANTS.CURSOR_POINTER,
+        },
+      }}
+    >
       <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown>
         <Menu.Item

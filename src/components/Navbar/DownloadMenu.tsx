@@ -64,30 +64,26 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
         return !["cropOverlay", "cropBox"].includes(node.id);
       },
     }).then((fullCanvas) => {
-      // Create an offscreen canvas to store the cropped image
       const croppedCanvas = document.createElement("canvas");
       const ctx = croppedCanvas.getContext("2d");
 
       if (!ctx) return;
 
-      // Set the canvas size to match the crop dimensions
       croppedCanvas.width = cropDimensions.width * imageScale;
       croppedCanvas.height = cropDimensions.height * imageScale;
 
-      // Draw only the cropped portion onto the new canvas
       ctx.drawImage(
         fullCanvas,
-        cropDimensions.x * imageScale, // Source X
-        cropDimensions.y * imageScale, // Source Y
-        cropDimensions.width * imageScale, // Source Width
-        cropDimensions.height * imageScale, // Source Height
+        cropDimensions.x * imageScale,
+        cropDimensions.y * imageScale,
+        cropDimensions.width * imageScale,
+        cropDimensions.height * imageScale,
         0,
         0,
         croppedCanvas.width,
         croppedCanvas.height
       );
 
-      // Convert the cropped canvas to an image and download it
       croppedCanvas.toBlob((blob) => {
         if (!blob) return;
         const link = document.createElement("a");
@@ -161,6 +157,11 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
                   )
                 }
                 rightSection={<IconChevronDown size={18} />}
+                styles={{
+                  input: {
+                    cursor: CONSTANTS.CURSOR_POINTER,
+                  },
+                }}
               >
                 <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
@@ -183,6 +184,14 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
                 style={{
                   width: "100%",
                 }}
+                styles={{
+                  thumb: {
+                    cursor: CONSTANTS.CURSOR_POINTER,
+                  },
+                  trackContainer: {
+                    cursor: CONSTANTS.CURSOR_POINTER,
+                  },
+                }}
               />
             </div>
             <Text size="xs" ta={"right"} c="dimmed">
@@ -192,18 +201,46 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
           <div className="downloadmenu-buttons">
             {!isCropping && (
               <>
-                <Button variant="light" onClick={() => setIsCropping(true)}>
+                <Button
+                  variant="light"
+                  onClick={() => setIsCropping(true)}
+                  styles={{
+                    root: {
+                      cursor: CONSTANTS.CURSOR_POINTER,
+                    },
+                  }}
+                >
                   Download selection
                 </Button>
-                <Button onClick={downloadAsImage}>Download screen</Button>
+                <Button
+                  onClick={downloadAsImage}
+                  styles={{
+                    root: {
+                      cursor: CONSTANTS.CURSOR_POINTER,
+                    },
+                  }}
+                >
+                  Download screen
+                </Button>
               </>
             )}
             {isCropping && (
               <>
-                <Button onClick={downloadSelectionAsImage}>
+                <Button
+                  onClick={downloadSelectionAsImage}
+                  styles={{ root: { cursor: CONSTANTS.CURSOR_POINTER } }}
+                >
                   Download selection
                 </Button>
-                <Button variant="light" onClick={() => setIsCropping(false)}>
+                <Button
+                  variant="light"
+                  onClick={() => setIsCropping(false)}
+                  styles={{
+                    root: {
+                      cursor: CONSTANTS.CURSOR_POINTER,
+                    },
+                  }}
+                >
                   Cancel
                 </Button>
               </>

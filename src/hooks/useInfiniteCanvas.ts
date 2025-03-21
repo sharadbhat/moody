@@ -2,6 +2,7 @@ import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
 import { useMoodyStore } from "../utils/store";
 import { useRef } from "react";
+import { CONSTANTS } from "../utils/constants";
 
 export const useInfiniteCanvas = () => {
   const { scale, offsetX, offsetY, setScale, setOffset, setLastMousePosition } =
@@ -82,6 +83,8 @@ export const useInfiniteCanvas = () => {
 
     isPanning.current = true;
 
+    document.body.style.cursor = CONSTANTS.CURSOR_GRABBING;
+
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
@@ -109,6 +112,8 @@ export const useInfiniteCanvas = () => {
 
   const handleMouseUp = () => {
     isPanning.current = false;
+
+    document.body.style.cursor = CONSTANTS.CURSOR_DEFAULT;
 
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);

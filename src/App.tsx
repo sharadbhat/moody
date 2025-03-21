@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { useState } from "react";
 
+import "./App.css";
+
 const theme = createTheme({
   colors: {},
 });
