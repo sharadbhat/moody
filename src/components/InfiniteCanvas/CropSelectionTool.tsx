@@ -1,6 +1,7 @@
 import { Rnd } from "react-rnd";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
+import { CONSTANTS } from "../../utils/constants";
 
 const CropSelectionTool = () => {
   const { cropDimensions, setCropDimensions } = useMoodyStore((state) => state);
@@ -36,7 +37,7 @@ const CropSelectionTool = () => {
       />
       <Rnd
         bounds={"parent"}
-        style={{ border: "1px dashed black" }}
+        style={{ border: "1px dashed black", cursor: CONSTANTS.CURSOR_MOVE }}
         id="cropBox"
         default={cropDimensions}
         minWidth={150}

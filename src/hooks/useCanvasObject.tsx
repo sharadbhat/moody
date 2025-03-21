@@ -2,8 +2,6 @@ import {
   CanvasObject,
   type CreateAndAddCanvasObjectProps,
   FileType,
-  type HandleDragStopProps,
-  type HandleResizeStopProps,
 } from "../utils/types";
 import { useMoodyStore } from "../utils/store";
 
@@ -18,11 +16,7 @@ type CreateImageCanvasObjectProps = {
 export const useCanvasObject = () => {
   const {
     scale,
-    offsetX,
-    offsetY,
     addCanvasObject,
-    setCanvasObjectPosition,
-    setCanvasObjectSizeAndPosition,
     removeCanvasObject,
     setCanvasObjectLock,
     setCanvasObjectLayerBack,
@@ -36,20 +30,27 @@ export const useCanvasObject = () => {
     imageObject,
   }: CreateImageCanvasObjectProps): CanvasObject => {
     let { width = 0, height = 0 } = imageObject || {};
-    if (width > height && width > MAX_DIMENSION) {
-      height = Math.round((height * MAX_DIMENSION) / width);
-      width = MAX_DIMENSION;
-    } else if (height > MAX_DIMENSION) {
-      width = Math.round((width * MAX_DIMENSION) / height);
-      height = MAX_DIMENSION;
+    const scaledMaxDimension = MAX_DIMENSION * scale;
+    if (width > height && width > scaledMaxDimension) {
+      height = Math.round((height * scaledMaxDimension) / width);
+      width = scaledMaxDimension;
+    } else if (height > scaledMaxDimension) {
+      width = Math.round((width * scaledMaxDimension) / height);
+      height = scaledMaxDimension;
     }
+
+    const x1 = x - width / 2;
+    const y1 = y - height / 2;
 
     return {
       id: `${Date.now()}`,
-      x: x / scale + offsetX - width / 2,
-      y: y / scale + offsetY - height / 2,
-      width,
-      height,
+      points: {
+        point1: { x: x1, y: y1 },
+        point2: { x: x1 + width, y: y1 },
+        point3: { x: x1 + width, y: y1 + height },
+        point4: { x: x1, y: y1 + height },
+      },
+      rotationAngle: 0,
       fileType: FileType.IMAGE,
       fileContent: imageObject?.src || "",
       lockAspectRatio: true,
@@ -78,14 +79,6 @@ export const useCanvasObject = () => {
     }
   };
 
-  const handleDragStop = ({ id, x, y }: HandleDragStopProps) => {
-    setCanvasObjectPosition(id, x, y);
-  };
-
-  const handleResizeStop = ({ id, delta, x, y }: HandleResizeStopProps) => {
-    setCanvasObjectSizeAndPosition(id, delta.width, delta.height, x, y);
-  };
-
   const handleDeleteCanvasObject = (id: string) => {
     removeCanvasObject(id);
   };
@@ -111,8 +104,6 @@ export const useCanvasObject = () => {
 
   return {
     handleNewCanvasObject,
-    handleDragStop,
-    handleResizeStop,
     handleDeleteCanvasObject,
     handleLockCanvasObject,
     handleSendToBack,

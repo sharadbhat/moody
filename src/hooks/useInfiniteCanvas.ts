@@ -1,19 +1,18 @@
 import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
 import { useMoodyStore } from "../utils/store";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { CONSTANTS } from "../utils/constants";
 
 export const useInfiniteCanvas = () => {
-  const scale = useMoodyStore((state) => state.scale);
-  const setScale = useMoodyStore((state) => state.setScale);
-
-  const offsetXRef = useRef(useMoodyStore.getState().offsetX);
-  const offsetYRef = useRef(useMoodyStore.getState().offsetY);
-  const setOffset = useMoodyStore((state) => state.setOffset);
+  const { scale, offsetX, offsetY, setScale, setOffset, setLastMousePosition } =
+    useMoodyStore((state) => state);
 
   const { handleNewCanvasObject } = useCanvasObject();
 
-  const [isPanning, setIsPanning] = useState(false);
+  const offsetXRef = useRef(offsetX);
+  const offsetYRef = useRef(offsetY);
+  const isPanning = useRef(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const animationFrameRef = useRef(null);
@@ -67,7 +66,6 @@ export const useInfiniteCanvas = () => {
     const worldX = event.clientX / scale + offsetXRef.current;
     const worldY = event.clientY / scale + offsetYRef.current;
 
-    // Compute new offsets to keep zoom centered at mouse
     const newOffsetX = worldX - event.clientX / newScale;
     const newOffsetY = worldY - event.clientY / newScale;
 
@@ -76,24 +74,30 @@ export const useInfiniteCanvas = () => {
 
     setOffset(newOffsetX, newOffsetY);
     setScale(newScale);
+    setLastMousePosition({ x: event.clientX, y: event.clientY });
   };
 
   const handleMouseDown = (event) => {
     startXRef.current = event.clientX;
     startYRef.current = event.clientY;
 
-    setIsPanning(true);
+    isPanning.current = true;
+
+    document.body.style.cursor = CONSTANTS.CURSOR_GRABBING;
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleMouseMove = (event) => {
-    if (!isPanning) {
+    if (!isPanning.current) {
       return;
     }
 
     if (!animationFrameRef.current) {
       animationFrameRef.current = requestAnimationFrame(() => {
-        const deltaX = (event.clientX - startXRef.current) / scale;
-        const deltaY = (event.clientY - startYRef.current) / scale;
+        const deltaX = event.clientX - startXRef.current;
+        const deltaY = event.clientY - startYRef.current;
 
         offsetXRef.current -= deltaX;
         offsetYRef.current -= deltaY;
@@ -107,7 +111,12 @@ export const useInfiniteCanvas = () => {
   };
 
   const handleMouseUp = () => {
-    setIsPanning(false);
+    isPanning.current = false;
+
+    document.body.style.cursor = CONSTANTS.CURSOR_DEFAULT;
+
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
   };
 
   return {
@@ -115,7 +124,5 @@ export const useInfiniteCanvas = () => {
     handleDrop,
     handleWheelScroll,
     handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
   };
 };

@@ -1,6 +1,7 @@
 import { Input, Title } from "@mantine/core";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
+import { CONSTANTS } from "../../utils/constants";
 
 const BoardName = ({ name }: { name: string }) => {
   const { setBoardName } = useMoodyStore((state) => state);
@@ -35,6 +36,7 @@ const BoardName = ({ name }: { name: string }) => {
             input: {
               textAlign: "center",
               fontSize: 25,
+              cursor: CONSTANTS.CURSOR_TYPING,
             },
           }}
           error={isError}

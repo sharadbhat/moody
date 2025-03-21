@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useEyeDropper } from "@mantine/hooks";
 import { IconColorPicker, IconHash, IconPalette } from "@tabler/icons-react";
 import { patterns } from "../../utils/patterns";
+import { CONSTANTS } from "../../utils/constants";
 
 const BackgroundColorPicker = () => {
   const {
@@ -112,6 +113,11 @@ const BackgroundColorPicker = () => {
               radius={"md"}
               onClick={initializeColors}
               autoContrast
+              styles={{
+                root: {
+                  cursor: CONSTANTS.CURSOR_POINTER,
+                },
+              }}
             >
               {<IconPalette stroke={1.5} />}
             </ActionIcon>
@@ -126,6 +132,11 @@ const BackgroundColorPicker = () => {
               onClick={() => handleColorElementChange("pattern")}
               fullWidth
               leftSection={<ColorSwatch color={patternColor} size={20} />}
+              styles={{
+                root: {
+                  cursor: CONSTANTS.CURSOR_POINTER,
+                },
+              }}
             >
               Pattern
             </Button>
@@ -136,6 +147,11 @@ const BackgroundColorPicker = () => {
               onClick={() => handleColorElementChange("background")}
               fullWidth
               leftSection={<ColorSwatch color={backgroundColor} size={20} />}
+              styles={{
+                root: {
+                  cursor: CONSTANTS.CURSOR_POINTER,
+                },
+              }}
             >
               Background
             </Button>
@@ -167,6 +183,11 @@ const BackgroundColorPicker = () => {
                   "#fab005",
                   "#fd7e14",
                 ]}
+                styles={{
+                  swatch: {
+                    cursor: CONSTANTS.CURSOR_POINTER,
+                  },
+                }}
               />
               <div className="colorpicker-input-wrapper">
                 <Input
@@ -218,6 +239,7 @@ const BackgroundColorPicker = () => {
                     <div
                       className="pattern-background"
                       style={{
+                        cursor: CONSTANTS.CURSOR_POINTER,
                         border:
                           backgroundPatternId.toString() == id
                             ? "5px solid var(--mantine-primary-color-2)"
@@ -248,10 +270,27 @@ const BackgroundColorPicker = () => {
           </ScrollArea>
 
           <div className="colorpicker-buttons">
-            <Button onClick={applySelections} fullWidth>
+            <Button
+              onClick={applySelections}
+              fullWidth
+              styles={{
+                root: {
+                  cursor: CONSTANTS.CURSOR_POINTER,
+                },
+              }}
+            >
               Apply
             </Button>
-            <Button variant="light" onClick={resetSelections} fullWidth>
+            <Button
+              variant="light"
+              onClick={resetSelections}
+              fullWidth
+              styles={{
+                root: {
+                  cursor: CONSTANTS.CURSOR_POINTER,
+                },
+              }}
+            >
               Cancel
             </Button>
           </div>

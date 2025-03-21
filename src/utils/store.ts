@@ -11,6 +11,7 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   scale: 1,
   offsetX: 0,
   offsetY: 0,
+  lastMousePosition: { x: 0, y: 0 },
 
   // Global settings
   snapToGrid: false,
@@ -40,6 +41,13 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
         y,
         width,
         height,
+      },
+    })),
+  setLastMousePosition: (position) =>
+    set(() => ({
+      lastMousePosition: {
+        x: position.x,
+        y: position.y,
       },
     })),
 
@@ -96,23 +104,13 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       ),
     })),
 
-  setCanvasObjectPosition: (id, x, y) =>
-    set((state) => ({
-      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
-        canvasObject.id === id ? { ...canvasObject, x, y } : canvasObject
-      ),
-    })),
-
-  setCanvasObjectSizeAndPosition: (id, widthDelta, heightDelta, x, y) =>
+  setCanvasObjectPosition: (id, points) =>
     set((state) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id
           ? {
               ...canvasObject,
-              width: canvasObject.width + widthDelta,
-              height: canvasObject.height + heightDelta,
-              x,
-              y,
+              points: points,
             }
           : canvasObject
       ),
@@ -163,6 +161,15 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       canvasObjectList: state.canvasObjectList.map((canvasObject) =>
         canvasObject.id === id
           ? { ...canvasObject, lockAspectRatio: lockAspectRatio }
+          : canvasObject
+      ),
+    })),
+
+  setCanvasObjectRotationAngle: (id, rotationAngle) =>
+    set((state) => ({
+      canvasObjectList: state.canvasObjectList.map((canvasObject) =>
+        canvasObject.id === id
+          ? { ...canvasObject, rotationAngle }
           : canvasObject
       ),
     })),

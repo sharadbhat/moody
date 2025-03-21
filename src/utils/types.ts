@@ -3,12 +3,22 @@ export enum FileType {
   TEXT = "TEXT",
 }
 
-export interface CanvasObject {
-  id: string;
+export type Point = {
   x: number;
   y: number;
-  width: number;
-  height: number;
+};
+
+export type CanvasObjectPoints = {
+  point1: Point;
+  point2: Point;
+  point3: Point;
+  point4: Point;
+};
+
+export interface CanvasObject {
+  id: string;
+  points: CanvasObjectPoints;
+  rotationAngle: number;
   fileType: FileType;
   fileContent: string;
   locked: boolean;
@@ -22,19 +32,6 @@ export interface CreateAndAddCanvasObjectProps {
   y: number;
 }
 
-export interface HandleDragStopProps {
-  id: string;
-  x: number;
-  y: number;
-}
-
-export interface HandleResizeStopProps {
-  id: string;
-  delta: { width: number; height: number };
-  x: number;
-  y: number;
-}
-
 export interface MoodyStore {
   boardName: string;
   canvasObjectList: CanvasObject[];
@@ -44,6 +41,7 @@ export interface MoodyStore {
   scale: number;
   offsetX: number;
   offsetY: number;
+  lastMousePosition: Point;
   isCropping: boolean;
   cropDimensions: {
     x: number;
@@ -60,6 +58,7 @@ export interface MoodyStore {
     width: number,
     height: number
   ) => void;
+  setLastMousePosition: (position: Point) => void;
   setBoardName: (boardName: string) => void;
   setBackgroundPatternId: (backgroundPatternId: number) => void;
   setPatternColor: (color: string) => void;
@@ -69,17 +68,11 @@ export interface MoodyStore {
   addCanvasObject: (canvasObject: CanvasObject) => void;
   removeCanvasObject: (canvasObjectId: string) => void;
   setCanvasObjectLock: (canvasObjectId: string, lockState: boolean) => void;
-  setCanvasObjectPosition: (id: string, x: number, y: number) => void;
-  setCanvasObjectSizeAndPosition: (
-    id: string,
-    widthDelta: number,
-    heightDelta: number,
-    x: number,
-    y: number
-  ) => void;
+  setCanvasObjectPosition: (id: string, points: CanvasObjectPoints) => void;
   setCanvasObjectLayerBack: (id: string) => void;
   setCanvasObjectLayerFront: (id: string) => void;
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
+  setCanvasObjectRotationAngle: (id: string, rotationAngle: number) => void;
 }
 
 export interface DrawImageProps {
