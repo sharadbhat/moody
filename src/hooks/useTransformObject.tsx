@@ -166,7 +166,6 @@ const useTransformObject = (canvasObject: CanvasObject) => {
       const deltaY = e.clientY - centerY;
 
       const newAngle = Math.atan2(deltaY, deltaX);
-      currentRotationRef.current = (newAngle * 180) / Math.PI + 90;
 
       let angleDiff = newAngle - initialRotationRef.current;
 
@@ -208,6 +207,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
         cosA,
         sinA
       );
+
+      const angle = Math.atan2(point2.y - point1.y, point2.x - point1.x);
+      currentRotationRef.current = (angle * 180) / Math.PI;
 
       setCanvasObjectPosition(canvasObjectId, {
         point1,
@@ -304,6 +306,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
       setShowHandles(show);
     }, [show]);
 
+    const roundedRotationAngle =
+      Math.round(currentRotationRef.current / 15) * 15;
+
     return (
       <>
         <div
@@ -388,7 +393,46 @@ const useTransformObject = (canvasObject: CanvasObject) => {
           }}
           onMouseDown={(e) => handleResizeDown(e, "bottom-right")}
         />
-        <div className={"rotate-handle"} onMouseDown={handleRotateDown} />
+        <div
+          className="rotate-handle top-left"
+          style={{
+            cursor: CONSTANTS.CURSOR_ROTATE.replace(
+              "{rotationAngle}",
+              `${roundedRotationAngle - 45}`
+            ),
+          }}
+          onMouseDown={handleRotateDown}
+        />
+        <div
+          className="rotate-handle top-right"
+          style={{
+            cursor: CONSTANTS.CURSOR_ROTATE.replace(
+              "{rotationAngle}",
+              `${roundedRotationAngle + 45}`
+            ),
+          }}
+          onMouseDown={handleRotateDown}
+        />
+        <div
+          className="rotate-handle bottom-left"
+          style={{
+            cursor: CONSTANTS.CURSOR_ROTATE.replace(
+              "{rotationAngle}",
+              `${roundedRotationAngle - 135}`
+            ),
+          }}
+          onMouseDown={handleRotateDown}
+        />
+        <div
+          className="rotate-handle bottom-right"
+          style={{
+            cursor: CONSTANTS.CURSOR_ROTATE.replace(
+              "{rotationAngle}",
+              `${roundedRotationAngle + 135}`
+            ),
+          }}
+          onMouseDown={handleRotateDown}
+        />
       </>
     );
   };
