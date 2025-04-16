@@ -1,5 +1,10 @@
 import "./index.css";
-import { ActionIcon, Menu, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Menu,
+  Tooltip,
+  useMantineColorScheme,
+} from "@mantine/core";
 import {
   IconArrowsMaximize,
   IconArrowsMinimize,
@@ -9,8 +14,10 @@ import {
   IconDownload,
   IconExternalLink,
   IconGrid4x4,
+  IconMoon,
   IconPhoto,
   IconPlus,
+  IconSun,
   IconTextSize,
 } from "@tabler/icons-react";
 import { CONSTANTS } from "../../utils/constants";
@@ -34,6 +41,8 @@ const Settings = () => {
   });
 
   const selectedFiles = Array.from(fileDialog.files || []);
+
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   useEffect(() => {
     if (selectedFiles.length > 0) {
@@ -107,6 +116,22 @@ const Settings = () => {
         />
       </div>
       <div className="settings-group">
+        <SettingsButton
+          title={`Set ${colorScheme === "light" ? "dark" : "light"} mode`}
+          icon={
+            colorScheme === "light" ? (
+              <IconMoon stroke={1.5} />
+            ) : (
+              <IconSun stroke={1.5} />
+            )
+          }
+          isEnabled={false}
+          onClick={() =>
+            setColorScheme(colorScheme === "light" ? "dark" : "light")
+          }
+        />
+      </div>
+      <div className="settings-group">
         <MoreMenu>
           <div>
             <SettingsButton
@@ -158,21 +183,7 @@ const SettingsButton = ({
           {icon}
         </ActionIcon>
         {showAddIcon && (
-          <div
-            style={{
-              position: "absolute",
-              top: -5,
-              right: -5,
-              backgroundColor: "var(--mantine-color-white)",
-              borderRadius: "50%",
-              border: "0.0625rem solid var(--mantine-color-gray-3)",
-              width: 15,
-              height: 15,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <div className="add-icon">
             <IconPlus stroke={1.5} size={16} />
           </div>
         )}

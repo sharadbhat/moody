@@ -1,33 +1,30 @@
-import { AppShell, MantineProvider, createTheme } from "@mantine/core";
-import ColorSchemeContext from "./utils/colorSchemeContext";
+import {
+  AppShell,
+  DEFAULT_THEME,
+  MantineProvider,
+  createTheme,
+  mergeMantineTheme,
+} from "@mantine/core";
 import InfiniteCanvas from "./components/InfiniteCanvas";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import { useState } from "react";
-
 import "./App.css";
 
-const theme = createTheme({
-  colors: {},
-});
+const overrides = createTheme({});
+
+const theme = mergeMantineTheme(DEFAULT_THEME, overrides);
 
 function App() {
-  const [colorScheme, setColorScheme] = useState("light");
-
   return (
-    <ColorSchemeContext.Provider
-      value={{ colorScheme, onChange: setColorScheme }}
-    >
-      <MantineProvider theme={theme}>
-        <AppShell>
-          <Navbar />
-          <Sidebar />
-          <AppShell.Main style={{ paddingTop: 0 }}>
-            <InfiniteCanvas />
-          </AppShell.Main>
-        </AppShell>
-      </MantineProvider>
-    </ColorSchemeContext.Provider>
+    <MantineProvider theme={theme}>
+      <AppShell>
+        <Navbar />
+        <Sidebar />
+        <AppShell.Main style={{ paddingTop: 0 }}>
+          <InfiniteCanvas />
+        </AppShell.Main>
+      </AppShell>
+    </MantineProvider>
   );
 }
 

@@ -21,7 +21,12 @@ const BoardName = ({ name }: { name: string }) => {
   };
 
   return (
-    <div onClick={() => setIsEditing(true)}>
+    <div
+      onClick={() => setIsEditing(true)}
+      style={{
+        cursor: CONSTANTS.CURSOR_TYPING,
+      }}
+    >
       {isEditing ? (
         <Input
           value={newName}
@@ -46,6 +51,8 @@ const BoardName = ({ name }: { name: string }) => {
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               handleSubmit();
+            } else if (event.key === "Escape") {
+              setIsEditing(false);
             }
           }}
         />

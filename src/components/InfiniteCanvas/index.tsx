@@ -29,7 +29,7 @@ const InfiniteCanvas = () => {
     [width, height, scale]
   );
   const backgroundPosition = useMemo(
-    () => `${-offsetX}px ${-offsetY}px`,
+    () => `${-offsetX * scale}px ${-offsetY * scale}px`,
     [offsetX, offsetY]
   );
 

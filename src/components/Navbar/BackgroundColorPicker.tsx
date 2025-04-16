@@ -9,6 +9,7 @@ import {
   ScrollArea,
   SimpleGrid,
   Tooltip,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
@@ -26,6 +27,8 @@ const BackgroundColorPicker = () => {
     setBackgroundColor,
     setBackgroundPatternId,
   } = useMoodyStore((state) => state);
+
+  const { colorScheme } = useMantineColorScheme();
 
   const { supported: isEyeDropperSupported, open: openEyeDropper } =
     useEyeDropper();
@@ -88,6 +91,35 @@ const BackgroundColorPicker = () => {
       setSelectedColorElement(element);
     } else {
       setSelectedColorElement(null);
+    }
+  };
+
+  const getPatternBackgroundColor = (id) => {
+    if (colorScheme === "light") {
+      return "white";
+    }
+    return "black";
+  };
+
+  const getPatternColor = (id) => {
+    if (colorScheme === "light") {
+      if (id == "0") {
+        return "white";
+      }
+      if (backgroundPatternId.toString() == id) {
+        return "var(--mantine-color-dark-text)";
+      }
+      return "var(--mantine-color-gray-filled)";
+    }
+
+    if (colorScheme === "dark") {
+      if (id == "0") {
+        return "black";
+      }
+      if (backgroundPatternId.toString() == id) {
+        return "var(--mantine-color-gray-0)";
+      }
+      return "var(--mantine-color-gray-6)";
     }
   };
 
@@ -244,16 +276,12 @@ const BackgroundColorPicker = () => {
                           backgroundPatternId.toString() == id
                             ? "5px solid var(--mantine-primary-color-2)"
                             : "5px solid transparent",
+                        backgroundColor: getPatternBackgroundColor(id),
                       }}
                     >
                       <div
                         style={{
-                          backgroundColor:
-                            id === "0"
-                              ? "white"
-                              : backgroundPatternId.toString() == id
-                              ? "#5b5b5b"
-                              : null,
+                          backgroundColor: getPatternColor(id),
                           maskImage: pattern.svg,
                           WebkitMaskImage: pattern.svg,
                         }}
