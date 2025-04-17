@@ -9,4 +9,5 @@
   z-index: 1;
   background-color: var(--mantine-color-default-hover);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--mantine-color-default-border);
 }

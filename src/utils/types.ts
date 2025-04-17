@@ -33,6 +33,7 @@ export interface CreateAndAddCanvasObjectProps {
 }
 
 export interface MoodyStore {
+  boardId: string;
   boardName: string;
   canvasObjectList: CanvasObject[];
   backgroundPatternId: number;
@@ -73,6 +74,7 @@ export interface MoodyStore {
   setCanvasObjectLayerFront: (id: string) => void;
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
   setCanvasObjectRotationAngle: (id: string, rotationAngle: number) => void;
+  setStateFromIndexedDB: (stateFromDB: MoodyStore) => void;
 }
 
 export interface DrawImageProps {

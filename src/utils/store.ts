@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export const useMoodyStore = create<MoodyStore>()((set) => ({
   // State variables
+  boardId: `${Date.now()}`,
   boardName: "Board name",
   canvasObjectList: [],
   backgroundPatternId: 0,
@@ -172,5 +173,10 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
           ? { ...canvasObject, rotationAngle }
           : canvasObject
       ),
+    })),
+
+  setStateFromIndexedDB: (stateFromDB) =>
+    set(() => ({
+      ...stateFromDB,
     })),
 }));

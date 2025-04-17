@@ -94,7 +94,7 @@ const BackgroundColorPicker = () => {
     }
   };
 
-  const getPatternBackgroundColor = (id) => {
+  const getPatternBackgroundColor = () => {
     if (colorScheme === "light") {
       return "white";
     }
@@ -276,7 +276,7 @@ const BackgroundColorPicker = () => {
                           backgroundPatternId.toString() == id
                             ? "5px solid var(--mantine-primary-color-2)"
                             : "5px solid transparent",
-                        backgroundColor: getPatternBackgroundColor(id),
+                        backgroundColor: getPatternBackgroundColor(),
                       }}
                     >
                       <div

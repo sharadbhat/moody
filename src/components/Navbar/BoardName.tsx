@@ -1,13 +1,15 @@
 import { Input, Title } from "@mantine/core";
 import { useMoodyStore } from "../../utils/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CONSTANTS } from "../../utils/constants";
+import { useStorage } from "../../hooks/useStorage";
 
-const BoardName = ({ name }: { name: string }) => {
-  const { setBoardName } = useMoodyStore((state) => state);
+const BoardName = () => {
+  const { setBoardName, boardName } = useMoodyStore((state) => state);
+  const { saveBoard } = useStorage();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(name);
+  const [newName, setNewName] = useState(boardName);
   const [isError, setIsError] = useState(false);
 
   const handleSubmit = () => {
@@ -17,14 +19,25 @@ const BoardName = ({ name }: { name: string }) => {
       setBoardName(newName);
       setIsEditing(false);
       setIsError(false);
+      saveBoard();
     }
   };
+
+  useEffect(() => {
+    setNewName(boardName);
+  }, [boardName]);
 
   return (
     <div
       onClick={() => setIsEditing(true)}
       style={{
         cursor: CONSTANTS.CURSOR_TYPING,
+      }}
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          setIsEditing(true);
+        }
       }}
     >
       {isEditing ? (
@@ -49,6 +62,7 @@ const BoardName = ({ name }: { name: string }) => {
           onBlur={handleSubmit}
           autoFocus
           onKeyDown={(event) => {
+            event.stopPropagation();
             if (event.key === "Enter") {
               handleSubmit();
             } else if (event.key === "Escape") {
@@ -57,7 +71,7 @@ const BoardName = ({ name }: { name: string }) => {
           }}
         />
       ) : (
-        <Title order={2}>{name}</Title>
+        <Title order={2}>{boardName}</Title>
       )}
     </div>
   );
