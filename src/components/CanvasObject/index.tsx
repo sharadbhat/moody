@@ -3,17 +3,23 @@ import { type CanvasObject, FileType } from "../../utils/types";
 import CanvasObjectControls from "../CanvasObjectControls";
 import { Popover } from "@mantine/core";
 import useTransformObject from "../../hooks/useTransformObject";
-import { useState } from "react";
-import { useClickOutside, useHover, useMergedRef } from "@mantine/hooks";
+import {
+  useClickOutside,
+  useDisclosure,
+  useHover,
+  useMergedRef,
+} from "@mantine/hooks";
 import { CONSTANTS } from "../../utils/constants";
+import { useState } from "react";
 
 const CanvasObject = (canvasObject: CanvasObject) => {
   const { Handles, handleDragDown, isDragging, isResizing, isRotating } =
     useTransformObject(canvasObject);
 
-  const [isOpened, setIsOpened] = useState(false);
+  const [opened, { close, toggle }] = useDisclosure(false);
+  const [mouseDownTimestamp, setMouseDownTimestamp] = useState(0);
 
-  const clickOutsideRef = useClickOutside(() => setIsOpened(false));
+  const clickOutsideRef = useClickOutside(close);
   const { hovered, ref: hoverRef } = useHover();
   const mergedRef = useMergedRef(hoverRef, clickOutsideRef);
 
@@ -49,14 +55,24 @@ const CanvasObject = (canvasObject: CanvasObject) => {
       return (
         <img
           className={`canvasImage ${
-            isDragging || isResizing || isRotating || hovered || isOpened
+            isDragging || isResizing || isRotating || hovered || opened
               ? "canvasImageSelected"
               : ""
           }`}
           src={canvasObject.fileContent}
           draggable={false}
-          onClick={() => setIsOpened(!isOpened)}
-          onMouseDown={!canvasObject.locked && handleDragDown}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (Date.now() - mouseDownTimestamp < 200) {
+              toggle();
+            }
+          }}
+          onMouseDown={(e) => {
+            setMouseDownTimestamp(Date.now());
+            if (!canvasObject.locked) {
+              handleDragDown(e);
+            }
+          }}
         />
       );
     }
@@ -80,11 +96,11 @@ const CanvasObject = (canvasObject: CanvasObject) => {
         <Handles show={isDragging || isResizing || isRotating || hovered} />
       )}
       <Popover
-        opened={isOpened}
-        onClose={() => setIsOpened(false)}
+        opened={opened}
+        onClose={close}
         position={canvasObject.locked ? "top" : "top-end"}
         styles={{ dropdown: { padding: 0 } }}
-        withinPortal={false}
+        withinPortal={true}
       >
         <Popover.Target>{renderContent()}</Popover.Target>
         <Popover.Dropdown>

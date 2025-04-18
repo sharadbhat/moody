@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
-import { useEyeDropper } from "@mantine/hooks";
+import { useDisclosure, useEyeDropper } from "@mantine/hooks";
 import { IconColorPicker, IconHash, IconPalette } from "@tabler/icons-react";
 import { patterns } from "../../utils/patterns";
 import { CONSTANTS } from "../../utils/constants";
@@ -39,7 +39,8 @@ const BackgroundColorPicker = () => {
   const [initialBackgroundPatternId, setInitialBackgroundPatternId] =
     useState(backgroundPatternId);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
+
   const [selectedColorElement, setSelectedColorElement] = useState<
     string | null
   >(null);
@@ -48,11 +49,11 @@ const BackgroundColorPicker = () => {
     setPatternColor(initialPatternColor);
     setBackgroundColor(initialBackgroundColor);
     setBackgroundPatternId(initialBackgroundPatternId);
-    setIsDropdownOpen(false);
+    close();
   };
 
   const applySelections = () => {
-    setIsDropdownOpen(false);
+    close();
   };
 
   const handleColorChange = (color: string) => {
@@ -124,12 +125,7 @@ const BackgroundColorPicker = () => {
   };
 
   return (
-    <Menu
-      opened={isDropdownOpen}
-      onOpen={() => setIsDropdownOpen(true)}
-      onClose={resetSelections}
-      width={325}
-    >
+    <Menu opened={opened} onOpen={open} onClose={resetSelections} width={325}>
       <Menu.Target>
         <div>
           <Tooltip

@@ -10,6 +10,31 @@ const VERSION = 1;
 export const useStorage = () => {
   let dbPromise: Promise<IDBPDatabase> | null = null;
 
+  const shouldSaveBoard = () => {
+    const moodyStore = useMoodyStore.getState();
+    const {
+      patternColor,
+      backgroundColor,
+      canvasObjectList,
+      backgroundPatternId,
+    } = moodyStore;
+
+    if (patternColor !== "#000000") {
+      return true;
+    }
+    if (backgroundColor !== "#ffffff") {
+      return true;
+    }
+    if (canvasObjectList.length !== 0) {
+      return true;
+    }
+    if (backgroundPatternId !== 0) {
+      return true;
+    }
+
+    return false;
+  };
+
   const getDb = async () => {
     if (!dbPromise) {
       dbPromise = openDB(DB_NAME, VERSION, {
@@ -32,7 +57,7 @@ export const useStorage = () => {
     return dbPromise;
   };
 
-  const saveBoard = async () => {
+  const saveBoard = async (bypassCheck?: boolean) => {
     const moodyStore = useMoodyStore.getState();
 
     const filteredStore = Object.fromEntries(
@@ -41,10 +66,9 @@ export const useStorage = () => {
       )
     );
 
-    const { boardId } = moodyStore;
+    const { boardId } = filteredStore;
 
-    if (!boardId || typeof boardId !== "string") {
-      console.error("Invalid boardId:", boardId);
+    if (!bypassCheck && !shouldSaveBoard()) {
       return;
     }
 

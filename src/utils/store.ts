@@ -1,10 +1,9 @@
 import type { MoodyStore } from "./types";
 import { create } from "zustand";
 
-export const useMoodyStore = create<MoodyStore>()((set) => ({
-  // State variables
+const initialState = {
   boardId: `${Date.now()}`,
-  boardName: "Board name",
+  boardName: "New Board",
   canvasObjectList: [],
   backgroundPatternId: 0,
   patternColor: "#000000",
@@ -23,6 +22,11 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
     width: 500,
     height: 500,
   },
+};
+
+export const useMoodyStore = create<MoodyStore>()((set) => ({
+  // State variables
+  ...initialState,
 
   // Settings actions
   toggleSnapToGrid: () =>
@@ -178,5 +182,11 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
   setStateFromIndexedDB: (stateFromDB) =>
     set(() => ({
       ...stateFromDB,
+    })),
+
+  resetStore: () =>
+    set(() => ({
+      ...initialState,
+      boardId: `${Date.now()}`,
     })),
 }));

@@ -75,6 +75,7 @@ export interface MoodyStore {
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
   setCanvasObjectRotationAngle: (id: string, rotationAngle: number) => void;
   setStateFromIndexedDB: (stateFromDB: MoodyStore) => void;
+  resetStore: () => void;
 }
 
 export interface DrawImageProps {

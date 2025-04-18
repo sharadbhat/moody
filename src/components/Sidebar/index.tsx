@@ -5,11 +5,12 @@ import { useStorage } from "../../hooks/useStorage";
 import { useEffect, useState } from "react";
 import { CONSTANTS } from "../../utils/constants";
 import { useMoodyStore } from "../../utils/store";
+import { BoardButton } from "./BoardButton";
 
 const Sidebar = () => {
   const [boards, setBoards] = useState([]);
-  const { getAllBoards, saveBoard, loadBoard } = useStorage();
-  const { boardId } = useMoodyStore();
+  const { getAllBoards, saveBoard } = useStorage();
+  const { resetStore } = useMoodyStore();
 
   useEffect(() => {
     getAllBoards().then((boards) => {
@@ -27,28 +28,33 @@ const Sidebar = () => {
     };
   }, []);
 
+  const handleCreateNewBoard = () => {
+    saveBoard()
+      .then(() => {
+        resetStore();
+      })
+      .then(() => {
+        saveBoard(true).then(() => {
+          getAllBoards().then((boards) => {
+            setBoards(boards);
+          });
+        });
+      });
+  };
+
+  const handleBoardDeleted = () => {
+    getAllBoards().then((boards) => {
+      setBoards(boards);
+    });
+  };
+
   const renderBoardButtons = () => {
     return boards.map((board) => (
-      <Button
+      <BoardButton
         key={board.id}
-        variant={board.id === boardId ? "light" : "default"}
-        h={"fit-content"}
-        w={"100%"}
-        radius={10}
-        style={{
-          cursor: CONSTANTS.CURSOR_POINTER,
-        }}
-        onClick={() => {
-          saveBoard();
-          loadBoard(board.id);
-        }}
-      >
-        <Stack m={20} gap={5} align="center" justify="center">
-          <Text size="md" c="black">
-            {board.boardName}
-          </Text>
-        </Stack>
-      </Button>
+        board={board}
+        onBoardDelete={handleBoardDeleted}
+      />
     ));
   };
 
@@ -63,6 +69,7 @@ const Sidebar = () => {
           style={{
             cursor: CONSTANTS.CURSOR_POINTER,
           }}
+          onClick={handleCreateNewBoard}
         >
           <Stack m={20} gap={5} align="center" justify="center">
             <IconPlus size={30} stroke={1.5} color="black" />
