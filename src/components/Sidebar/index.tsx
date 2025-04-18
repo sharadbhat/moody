@@ -8,7 +8,7 @@ import { useMoodyStore } from "../../utils/store";
 
 const Sidebar = () => {
   const [boards, setBoards] = useState([]);
-  const { getAllBoards, loadBoard } = useStorage();
+  const { getAllBoards, saveBoard, loadBoard } = useStorage();
   const { boardId } = useMoodyStore();
 
   useEffect(() => {
@@ -38,7 +38,10 @@ const Sidebar = () => {
         style={{
           cursor: CONSTANTS.CURSOR_POINTER,
         }}
-        onClick={() => loadBoard(board.id)}
+        onClick={() => {
+          saveBoard();
+          loadBoard(board.id);
+        }}
       >
         <Stack m={20} gap={5} align="center" justify="center">
           <Text size="md" c="black">
