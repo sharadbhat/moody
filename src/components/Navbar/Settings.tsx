@@ -1,6 +1,7 @@
 import "./index.css";
 import {
   ActionIcon,
+  Group,
   Menu,
   Tooltip,
   useMantineColorScheme,
@@ -67,8 +68,8 @@ const Settings = () => {
   }, [selectedFiles]);
 
   return (
-    <div className="settings">
-      <div className="settings-group">
+    <Group align="center" justify="end" gap={32}>
+      <Group gap={8}>
         <SettingsButton
           title="Add image"
           icon={<IconPhoto stroke={1.5} />}
@@ -83,11 +84,11 @@ const Settings = () => {
           onClick={() => {}}
           showAddIcon
         />
-      </div>
-      <div className="settings-group">
+      </Group>
+      <Group gap={8}>
         <BackgroundColorPicker />
-      </div>
-      <div className="settings-group">
+      </Group>
+      <Group gap={8}>
         <SettingsButton
           title="Snap to grid"
           icon={<IconGrid4x4 stroke={1.5} />}
@@ -114,8 +115,8 @@ const Settings = () => {
           isEnabled={false}
           onClick={toggle}
         />
-      </div>
-      <div className="settings-group">
+      </Group>
+      <Group gap={8}>
         <SettingsButton
           title={`Set ${colorScheme === "light" ? "dark" : "light"} mode`}
           icon={
@@ -130,8 +131,8 @@ const Settings = () => {
             setColorScheme(colorScheme === "light" ? "dark" : "light")
           }
         />
-      </div>
-      <div className="settings-group">
+      </Group>
+      <Group gap={8}>
         <MoreMenu>
           <div>
             <SettingsButton
@@ -142,8 +143,8 @@ const Settings = () => {
             />
           </div>
         </MoreMenu>
-      </div>
-    </div>
+      </Group>
+    </Group>
   );
 };
 

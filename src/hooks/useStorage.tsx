@@ -13,11 +13,16 @@ export const useStorage = () => {
   const shouldSaveBoard = () => {
     const moodyStore = useMoodyStore.getState();
     const {
+      boardName,
       patternColor,
       backgroundColor,
       canvasObjectList,
       backgroundPatternId,
     } = moodyStore;
+
+    if (boardName !== "New Board") {
+      return true;
+    }
 
     if (patternColor !== "#000000") {
       return true;

@@ -1,13 +1,9 @@
-import { Button, Flex, Menu, NativeSelect, Slider, Text } from "@mantine/core";
-import {
-  IconChevronDown,
-  IconFileTypeJpg,
-  IconFileTypePng,
-} from "@tabler/icons-react";
+import { Button, Flex, Menu, Slider, Stack, Text } from "@mantine/core";
 import { toCanvas, toJpeg, toPng } from "html-to-image";
 import { CONSTANTS } from "../../utils/constants";
 import { useMoodyStore } from "../../utils/store";
 import { useState } from "react";
+import { DownloadFormatSelect } from "./DownloadFormatSelect";
 
 const scaleMultiplier = 2;
 
@@ -139,37 +135,25 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
         <div>{children}</div>
       </Menu.Target>
       <Menu.Dropdown>
-        <Flex direction={"column"} gap={"md"} className="downloadmenu-flex">
+        <Flex
+          direction={"column"}
+          gap={"md"}
+          className="downloadmenu-flex"
+          p={10}
+        >
           <div>
-            <Text size="xs" c="dimmed">
+            <Text size="xs" c="dimmed" mb={5}>
               Download as
             </Text>
-            <div className="downloadmenu-select-wrapper">
-              <NativeSelect
-                value={imageType}
-                onChange={(e) => setImageType(e.target.value)}
-                mt="md"
-                leftSection={
-                  imageType === "jpeg" ? (
-                    <IconFileTypeJpg />
-                  ) : (
-                    <IconFileTypePng />
-                  )
-                }
-                rightSection={<IconChevronDown size={18} />}
-                styles={{
-                  input: {
-                    cursor: CONSTANTS.CURSOR_POINTER,
-                  },
-                }}
-              >
-                <option value="jpeg">JPEG</option>
-                <option value="png">PNG</option>
-              </NativeSelect>
-            </div>
+            <DownloadFormatSelect
+              defaultFormat={imageType.toUpperCase()}
+              handleDownloadFormatChange={(type: string) =>
+                setImageType(type.toLowerCase())
+              }
+            />
           </div>
           <div>
-            <Text size="xs" c="dimmed">
+            <Text size="xs" c="dimmed" mb={5}>
               Scale
             </Text>
             <div className="downloadmenu-scale-slider-wrapper">
@@ -198,7 +182,7 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
               {renderImageSize()}
             </Text>
           </div>
-          <div className="downloadmenu-buttons">
+          <Stack gap={8}>
             {!isCropping && (
               <>
                 <Button
@@ -245,7 +229,7 @@ const DownloadMenu = ({ children }: { children: React.ReactNode }) => {
                 </Button>
               </>
             )}
-          </div>
+          </Stack>
         </Flex>
       </Menu.Dropdown>
     </Menu>

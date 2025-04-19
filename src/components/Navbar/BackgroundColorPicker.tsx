@@ -4,10 +4,13 @@ import {
   Button,
   ColorPicker,
   ColorSwatch,
+  Group,
   Input,
   Menu,
   ScrollArea,
   SimpleGrid,
+  Stack,
+  Text,
   Tooltip,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -153,147 +156,175 @@ const BackgroundColorPicker = () => {
         </div>
       </Menu.Target>
       <Menu.Dropdown>
-        <div className="colorpicker-dropdown">
-          <div className="colorpicker-element-buttons">
-            <Button
-              variant={selectedColorElement === "pattern" ? "light" : "default"}
-              onClick={() => handleColorElementChange("pattern")}
-              fullWidth
-              leftSection={<ColorSwatch color={patternColor} size={20} />}
-              styles={{
-                root: {
-                  cursor: CONSTANTS.CURSOR_POINTER,
-                },
-              }}
-            >
-              Pattern
-            </Button>
-            <Button
-              variant={
-                selectedColorElement === "background" ? "light" : "default"
-              }
-              onClick={() => handleColorElementChange("background")}
-              fullWidth
-              leftSection={<ColorSwatch color={backgroundColor} size={20} />}
-              styles={{
-                root: {
-                  cursor: CONSTANTS.CURSOR_POINTER,
-                },
-              }}
-            >
-              Background
-            </Button>
-          </div>
-          {selectedColorElement !== null && (
-            <>
-              <ColorPicker
-                fullWidth
-                value={
-                  selectedColorElement === "pattern"
-                    ? patternColor
-                    : backgroundColor
+        <Stack p={8} gap={8}>
+          <Stack gap={4}>
+            <Text size="xs" c="dimmed">
+              Choose an item
+            </Text>
+            <Group gap={8} wrap="nowrap">
+              <Button
+                variant={
+                  selectedColorElement === "pattern" ? "light" : "default"
                 }
-                format="rgba"
-                onChange={handleColorChange}
-                swatches={[
-                  "#2A2D34",
-                  "#878BCD",
-                  "#D292D2",
-                  "#F6AEC5",
-                  "#FDF1A1",
-                  "#BFEB88",
-                  "#83D1D4",
-                  "#fcaad1",
-                  "#f7e9de",
-                  "#96b7f8",
-                  "#f9faf9",
-                  "#82c91e",
-                  "#fab005",
-                  "#fd7e14",
-                ]}
+                onClick={() => handleColorElementChange("pattern")}
+                fullWidth
+                leftSection={<ColorSwatch color={patternColor} size={20} />}
                 styles={{
-                  swatch: {
+                  root: {
                     cursor: CONSTANTS.CURSOR_POINTER,
                   },
                 }}
-              />
-              <div className="colorpicker-input-wrapper">
-                <Input
-                  placeholder="Enter a color hex code"
-                  leftSection={<IconHash stroke={1.5} />}
-                  onChange={(e) => handleColorChange(e.target.value)}
-                  className="colorpicker-input"
+              >
+                Pattern
+              </Button>
+              <Button
+                variant={
+                  selectedColorElement === "background" ? "light" : "default"
+                }
+                onClick={() => handleColorElementChange("background")}
+                fullWidth
+                leftSection={<ColorSwatch color={backgroundColor} size={20} />}
+                styles={{
+                  root: {
+                    cursor: CONSTANTS.CURSOR_POINTER,
+                  },
+                }}
+              >
+                Background
+              </Button>
+            </Group>
+          </Stack>
+          {selectedColorElement !== null && (
+            <Stack gap={8}>
+              <Stack gap={4}>
+                <Text size="xs" c="dimmed">
+                  Choose a color
+                </Text>
+                <ColorPicker
+                  fullWidth
+                  value={
+                    selectedColorElement === "pattern"
+                      ? patternColor
+                      : backgroundColor
+                  }
+                  format="rgba"
+                  onChange={handleColorChange}
+                  swatches={[
+                    "#2A2D34",
+                    "#878BCD",
+                    "#D292D2",
+                    "#F6AEC5",
+                    "#FDF1A1",
+                    "#BFEB88",
+                    "#83D1D4",
+                    "#fcaad1",
+                    "#f7e9de",
+                    "#96b7f8",
+                    "#f9faf9",
+                    "#82c91e",
+                    "#fab005",
+                    "#fd7e14",
+                  ]}
+                  styles={{
+                    swatch: {
+                      cursor: CONSTANTS.CURSOR_POINTER,
+                    },
+                  }}
                 />
-                {isEyeDropperSupported && (
-                  <Tooltip
-                    label="Eye dropper tool"
-                    withArrow
-                    openDelay={200}
-                    zIndex={1000}
-                  >
-                    <div>
-                      <Tooltip
-                        label="Press ESC to close"
-                        position="bottom"
-                        openDelay={200}
-                        zIndex={1000}
-                      >
-                        <ActionIcon
-                          size={"lg"}
-                          radius={"xl"}
-                          onClick={handleEyeDropper}
-                          variant="light"
+              </Stack>
+              <Stack gap={4}>
+                <Text size="xs" c="dimmed">
+                  Or enter the hex code
+                  {isEyeDropperSupported && " / eye dropper tool"}
+                </Text>
+
+                <Group gap={8} wrap="nowrap">
+                  <Input
+                    placeholder="Enter a color hex code"
+                    leftSection={<IconHash stroke={1.5} />}
+                    onChange={(e) => handleColorChange(e.target.value)}
+                    className="colorpicker-input"
+                    styles={{
+                      input: {
+                        cursor: CONSTANTS.CURSOR_TYPING,
+                      },
+                    }}
+                  />
+                  {isEyeDropperSupported && (
+                    <Tooltip
+                      label="Eye dropper tool"
+                      withArrow
+                      openDelay={200}
+                      zIndex={1000}
+                    >
+                      <div>
+                        <Tooltip
+                          label="Press ESC to close"
+                          position="bottom"
+                          openDelay={200}
+                          zIndex={1000}
                         >
-                          {<IconColorPicker stroke={1.5} />}
-                        </ActionIcon>
-                      </Tooltip>
-                    </div>
-                  </Tooltip>
-                )}
-              </div>
-            </>
+                          <ActionIcon
+                            size={"lg"}
+                            radius={"xl"}
+                            onClick={handleEyeDropper}
+                            variant="light"
+                          >
+                            {<IconColorPicker stroke={1.5} />}
+                          </ActionIcon>
+                        </Tooltip>
+                      </div>
+                    </Tooltip>
+                  )}
+                </Group>
+              </Stack>
+            </Stack>
           )}
-          <ScrollArea h={"30vh"}>
-            <SimpleGrid cols={3} spacing={4} verticalSpacing={4}>
-              {Object.entries(patterns).map(([id, pattern]) => (
-                <div key={id}>
-                  <Tooltip
-                    label={pattern.name}
-                    position="top"
-                    withArrow
-                    zIndex={1000}
-                    openDelay={200}
-                  >
-                    <div
-                      className="pattern-background"
-                      style={{
-                        cursor: CONSTANTS.CURSOR_POINTER,
-                        border:
-                          backgroundPatternId.toString() == id
-                            ? "5px solid var(--mantine-primary-color-2)"
-                            : "5px solid transparent",
-                        backgroundColor: getPatternBackgroundColor(),
-                      }}
+          <Stack gap={4}>
+            <Text size="xs" c="dimmed">
+              Choose a pattern
+            </Text>
+            <ScrollArea h={"30vh"}>
+              <SimpleGrid cols={3} spacing={4} verticalSpacing={4}>
+                {Object.entries(patterns).map(([id, pattern]) => (
+                  <div key={id}>
+                    <Tooltip
+                      label={pattern.name}
+                      position="top"
+                      withArrow
+                      zIndex={1000}
+                      openDelay={200}
                     >
                       <div
+                        className="pattern-background"
                         style={{
-                          backgroundColor: getPatternColor(id),
-                          maskImage: pattern.svg,
-                          WebkitMaskImage: pattern.svg,
+                          cursor: CONSTANTS.CURSOR_POINTER,
+                          border:
+                            backgroundPatternId.toString() == id
+                              ? "5px solid var(--mantine-primary-color-2)"
+                              : "5px solid transparent",
+                          backgroundColor: getPatternBackgroundColor(),
                         }}
-                        className="pattern-div"
-                        onClick={() =>
-                          handlePatternChange(id as unknown as number)
-                        }
-                      />
-                    </div>
-                  </Tooltip>
-                </div>
-              ))}
-            </SimpleGrid>
-          </ScrollArea>
-
-          <div className="colorpicker-buttons">
+                      >
+                        <div
+                          style={{
+                            backgroundColor: getPatternColor(id),
+                            maskImage: pattern.svg,
+                            WebkitMaskImage: pattern.svg,
+                          }}
+                          className="pattern-div"
+                          onClick={() =>
+                            handlePatternChange(id as unknown as number)
+                          }
+                        />
+                      </div>
+                    </Tooltip>
+                  </div>
+                ))}
+              </SimpleGrid>
+            </ScrollArea>
+          </Stack>
+          <Stack gap={8} mt={16}>
             <Button
               onClick={applySelections}
               fullWidth
@@ -317,8 +348,8 @@ const BackgroundColorPicker = () => {
             >
               Cancel
             </Button>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       </Menu.Dropdown>
     </Menu>
   );
