@@ -38,13 +38,14 @@ export const BoardButton = ({ board, onBoardDelete }) => {
         key={board.id}
         variant={board.id === boardId ? "light" : "default"}
         h={"fit-content"}
-        w={"100%"}
+        fullWidth
         radius={10}
         style={{
           cursor: CONSTANTS.CURSOR_POINTER,
         }}
         onClick={() => handleSelectBoard(board.id)}
         className="board-button"
+        mt={10}
       >
         <div className="delete-button">
           <ActionIcon

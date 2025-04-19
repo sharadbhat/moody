@@ -1,6 +1,6 @@
 import { IconPlus } from "@tabler/icons-react";
 import "./index.css";
-import { Button, Stack, Text } from "@mantine/core";
+import { Button, ScrollArea, Stack, Text } from "@mantine/core";
 import { useStorage } from "../../hooks/useStorage";
 import { useEffect, useState } from "react";
 import { CONSTANTS } from "../../utils/constants";
@@ -60,11 +60,11 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar">
-      <Stack align="center" justify="flex-start" h="100%" p={10} gap={10}>
+      <ScrollArea h={"100%"} p={10}>
         <Button
           variant="default"
           h={"fit-content"}
-          w={"100%"}
+          fullWidth
           radius={10}
           style={{
             cursor: CONSTANTS.CURSOR_POINTER,
@@ -79,7 +79,7 @@ const Sidebar = () => {
           </Stack>
         </Button>
         {renderBoardButtons()}
-      </Stack>
+      </ScrollArea>
     </div>
   );
 };
