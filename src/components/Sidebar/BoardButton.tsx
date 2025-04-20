@@ -5,15 +5,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { useStorage } from "../../hooks/useStorage";
 import { useMoodyStore } from "../../utils/store";
 
-export const BoardButton = ({ board, onBoardDelete }) => {
-  const { boardId, resetStore } = useMoodyStore();
+export const BoardButton = ({ boardId, boardName, onBoardDelete }) => {
+  const { boardId: currentBoardId, resetStore } = useMoodyStore();
   const [opened, { open, close }] = useDisclosure(false);
-  const { saveBoard, loadBoard, deleteBoard } = useStorage();
+  const { deleteBoard, saveAndLoadBoard, loadAllBoardsIntoStore } =
+    useStorage();
 
   const handleSelectBoard = (boardId: string) => {
-    saveBoard().then(() => {
-      loadBoard(boardId);
-    });
+    saveAndLoadBoard(boardId);
   };
 
   const handleDeleteButtonClick = () => {
@@ -25,9 +24,7 @@ export const BoardButton = ({ board, onBoardDelete }) => {
   };
 
   const handleDeleteConfirm = () => {
-    deleteBoard(board.id).then(() => {
-      resetStore();
-    });
+    deleteBoard(boardId).then(resetStore).then(loadAllBoardsIntoStore);
     close();
     onBoardDelete();
   };
@@ -35,15 +32,17 @@ export const BoardButton = ({ board, onBoardDelete }) => {
   return (
     <>
       <Button
-        key={board.id}
-        variant={board.id === boardId ? "light" : "default"}
+        key={boardId}
+        variant={boardId === currentBoardId ? "light" : "default"}
         h={"fit-content"}
         fullWidth
         radius={10}
         style={{
           cursor: CONSTANTS.CURSOR_POINTER,
         }}
-        onClick={() => handleSelectBoard(board.id)}
+        onClick={
+          boardId === currentBoardId ? null : () => handleSelectBoard(boardId)
+        }
         className="board-button"
         mt={10}
       >
@@ -64,8 +63,8 @@ export const BoardButton = ({ board, onBoardDelete }) => {
           </ActionIcon>
         </div>
         <Stack m={30} gap={5} align="center" justify="center">
-          <Text size="md" c="black" truncate={"end"}>
-            {board.boardName}
+          <Text size="md" truncate={"end"}>
+            {boardName}
           </Text>
         </Stack>
       </Button>
@@ -81,7 +80,7 @@ export const BoardButton = ({ board, onBoardDelete }) => {
       >
         <Modal.Body p={0} mt={10}>
           <Text>
-            This will delete the board <strong>{board.boardName}</strong>.
+            This will delete the board <strong>{boardName}</strong>.
           </Text>
           <Group justify="end" mt={40}>
             <Button variant="outline" onClick={handleCancelDelete}>

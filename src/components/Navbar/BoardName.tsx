@@ -6,7 +6,7 @@ import { useStorage } from "../../hooks/useStorage";
 
 const BoardName = () => {
   const { setBoardName, boardName } = useMoodyStore((state) => state);
-  const { saveBoard } = useStorage();
+  const { saveAndLoadAllBoardsIntoStore } = useStorage();
 
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(boardName);
@@ -19,7 +19,7 @@ const BoardName = () => {
       setBoardName(newName);
       setIsEditing(false);
       setIsError(false);
-      saveBoard();
+      saveAndLoadAllBoardsIntoStore();
     }
   };
 
@@ -71,7 +71,19 @@ const BoardName = () => {
           }}
         />
       ) : (
-        <Title order={2}>{boardName}</Title>
+        <Title
+          order={2}
+          pl={10}
+          pr={10}
+          styles={{
+            root: {
+              border: "2px solid lightgray",
+              borderRadius: "5px",
+            },
+          }}
+        >
+          {boardName}
+        </Title>
       )}
     </div>
   );

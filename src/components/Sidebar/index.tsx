@@ -2,57 +2,46 @@ import { IconPlus } from "@tabler/icons-react";
 import "./index.css";
 import { Button, ScrollArea, Stack, Text } from "@mantine/core";
 import { useStorage } from "../../hooks/useStorage";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CONSTANTS } from "../../utils/constants";
 import { useMoodyStore } from "../../utils/store";
 import { BoardButton } from "./BoardButton";
 
 const Sidebar = () => {
-  const [boards, setBoards] = useState([]);
-  const { getAllBoards, saveBoard } = useStorage();
-  const { resetStore } = useMoodyStore();
+  const { saveBoard, loadAllBoardsIntoStore, saveAndLoadAllBoardsIntoStore } =
+    useStorage();
+  const { boardList, resetStore, setBoardLoading } = useMoodyStore();
 
   useEffect(() => {
-    getAllBoards().then((boards) => {
-      setBoards(boards);
-    });
+    loadAllBoardsIntoStore();
 
     const interval = setInterval(() => {
-      getAllBoards().then((boards) => {
-        setBoards(boards);
-      });
-    }, 5000);
+      loadAllBoardsIntoStore();
+    }, 15000);
 
     return () => {
       clearInterval(interval);
     };
   }, []);
 
-  const handleCreateNewBoard = () => {
-    saveBoard()
-      .then(() => {
-        resetStore();
-      })
-      .then(() => {
-        saveBoard(true).then(() => {
-          getAllBoards().then((boards) => {
-            setBoards(boards);
-          });
-        });
-      });
+  const handleCreateNewBoard = async () => {
+    setBoardLoading(true);
+    await saveBoard();
+    resetStore();
+    await saveAndLoadAllBoardsIntoStore(true);
+    setBoardLoading(false);
   };
 
   const handleBoardDeleted = () => {
-    getAllBoards().then((boards) => {
-      setBoards(boards);
-    });
+    loadAllBoardsIntoStore();
   };
 
   const renderBoardButtons = () => {
-    return boards.map((board) => (
+    return boardList.map((board) => (
       <BoardButton
         key={board.id}
-        board={board}
+        boardId={board.id}
+        boardName={board.boardName}
         onBoardDelete={handleBoardDeleted}
       />
     ));
@@ -72,10 +61,8 @@ const Sidebar = () => {
           onClick={handleCreateNewBoard}
         >
           <Stack m={20} gap={5} align="center" justify="center">
-            <IconPlus size={30} stroke={1.5} color="black" />
-            <Text size="md" c="black">
-              Create new board
-            </Text>
+            <IconPlus size={30} stroke={1.5} />
+            <Text size="md">Create new board</Text>
           </Stack>
         </Button>
         {renderBoardButtons()}

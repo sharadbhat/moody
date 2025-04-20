@@ -1,5 +1,6 @@
 import { IDBPDatabase, openDB } from "idb";
 import { useMoodyStore } from "../utils/store";
+import { BoardData } from "../utils/types";
 
 const DB_NAME = "moodyDB";
 const STORE_NAME = "boards";
@@ -7,7 +8,10 @@ const LAST_BOARD_ID_STORE_NAME = "lastBoardId";
 
 const VERSION = 1;
 
+const REMOVE_KEYS = ["boardList", "boardLoading"];
+
 export const useStorage = () => {
+  const { setBoardList, setBoardLoading } = useMoodyStore();
   let dbPromise: Promise<IDBPDatabase> | null = null;
 
   const shouldSaveBoard = () => {
@@ -20,7 +24,7 @@ export const useStorage = () => {
       backgroundPatternId,
     } = moodyStore;
 
-    if (boardName !== "New Board") {
+    if (boardName !== "Untitled") {
       return true;
     }
 
@@ -71,6 +75,8 @@ export const useStorage = () => {
       )
     );
 
+    REMOVE_KEYS.forEach((key) => delete filteredStore[key]);
+
     const { boardId } = filteredStore;
 
     if (!bypassCheck && !shouldSaveBoard()) {
@@ -90,6 +96,23 @@ export const useStorage = () => {
     });
   };
 
+  const saveAndLoadAllBoardsIntoStore = async (bypassCheck?: boolean) => {
+    await saveBoard(bypassCheck);
+    await loadAllBoardsIntoStore();
+  };
+
+  const loadAllBoardsIntoStore = async () => {
+    const db = await getDb();
+
+    const allBoards = await db.getAll(STORE_NAME);
+    const filteredBoards = allBoards.map(({ id, boardName }: BoardData) => ({
+      id,
+      boardName,
+    }));
+
+    setBoardList(filteredBoards);
+  };
+
   const loadBoard = async (id?: string) => {
     const db = await getDb();
 
@@ -104,7 +127,19 @@ export const useStorage = () => {
 
       const { id, ...rest } = savedBoard;
       useMoodyStore.getState().setStateFromIndexedDB(rest);
+
+      await db.put(LAST_BOARD_ID_STORE_NAME, {
+        id: "lastBoardId",
+        value: boardId,
+      });
     }
+  };
+
+  const saveAndLoadBoard = async (id?: string) => {
+    setBoardLoading(true);
+    await saveBoard();
+    await loadBoard(id);
+    setBoardLoading(false);
   };
 
   const getAllBoards = async () => {
@@ -128,5 +163,8 @@ export const useStorage = () => {
     loadBoard,
     getAllBoards,
     deleteBoard,
+    loadAllBoardsIntoStore,
+    saveAndLoadBoard,
+    saveAndLoadAllBoardsIntoStore,
   };
 };

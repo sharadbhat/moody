@@ -3,6 +3,11 @@ export enum FileType {
   TEXT = "TEXT",
 }
 
+export type BoardData = {
+  id: string;
+  boardName: string;
+};
+
 export type Point = {
   x: number;
   y: number;
@@ -32,7 +37,7 @@ export interface CreateAndAddCanvasObjectProps {
   y: number;
 }
 
-export interface MoodyStore {
+export interface MoodyStoreState {
   boardId: string;
   boardName: string;
   canvasObjectList: CanvasObject[];
@@ -51,6 +56,11 @@ export interface MoodyStore {
     height: number;
   };
   snapToGrid: boolean;
+  boardList: BoardData[];
+  boardLoading: boolean;
+}
+
+export interface MoodyStore extends MoodyStoreState {
   toggleSnapToGrid: () => void;
   setIsCropping: (isCropping: boolean) => void;
   setCropDimensions: (
@@ -75,6 +85,8 @@ export interface MoodyStore {
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;
   setCanvasObjectRotationAngle: (id: string, rotationAngle: number) => void;
   setStateFromIndexedDB: (stateFromDB: MoodyStore) => void;
+  setBoardList: (boards: BoardData[]) => void;
+  setBoardLoading: (loading: boolean) => void;
   resetStore: () => void;
 }
 

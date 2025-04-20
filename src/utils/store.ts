@@ -1,9 +1,9 @@
-import type { MoodyStore } from "./types";
+import type { MoodyStore, MoodyStoreState } from "./types";
 import { create } from "zustand";
 
-const initialState = {
+const initialState: MoodyStoreState = {
   boardId: `${Date.now()}`,
-  boardName: "New Board",
+  boardName: "Untitled",
   canvasObjectList: [],
   backgroundPatternId: 0,
   patternColor: "#000000",
@@ -22,6 +22,8 @@ const initialState = {
     width: 500,
     height: 500,
   },
+  boardList: [],
+  boardLoading: false,
 };
 
 export const useMoodyStore = create<MoodyStore>()((set) => ({
@@ -184,9 +186,19 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
       ...stateFromDB,
     })),
 
+  setBoardList: (boards) =>
+    set(() => ({
+      boardList: boards,
+    })),
+
   resetStore: () =>
     set(() => ({
       ...initialState,
       boardId: `${Date.now()}`,
+    })),
+
+  setBoardLoading: (loading) =>
+    set(() => ({
+      boardLoading: loading,
     })),
 }));
