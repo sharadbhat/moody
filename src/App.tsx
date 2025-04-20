@@ -1,6 +1,5 @@
 import {
   AppShell,
-  Box,
   DEFAULT_THEME,
   LoadingOverlay,
   MantineProvider,
