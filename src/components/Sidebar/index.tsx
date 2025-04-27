@@ -49,7 +49,13 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar">
-      <ScrollArea h={"100%"} p={10}>
+      <ScrollArea
+        h={"100%"}
+        p={10}
+        style={{
+          cursor: CONSTANTS.CURSOR_DEFAULT,
+        }}
+      >
         <Button
           variant="default"
           h={"fit-content"}

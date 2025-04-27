@@ -19,6 +19,7 @@ const CropSelectionTool = () => {
         className="cropOverlay"
         id="cropOverlay"
         style={{
+          cursor: CONSTANTS.CURSOR_DEFAULT,
           clipPath: `polygon(
             0% 0%,
             0% 100%,

@@ -9,6 +9,7 @@ import {
 } from "@tabler/icons-react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
+import { CONSTANTS } from "../../utils/constants";
 
 export interface CanvasObjectControlsProps {
   id: string;
@@ -117,6 +118,9 @@ const CanvasObjectControlButton = ({
         aria-label={label}
         onClick={onClick}
         color={color}
+        style={{
+          cursor: CONSTANTS.CURSOR_POINTER,
+        }}
       >
         {icon}
       </ActionIcon>

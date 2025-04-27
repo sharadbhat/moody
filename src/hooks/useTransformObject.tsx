@@ -135,7 +135,7 @@ const useTransformObject = (canvasObject: CanvasObject) => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  const handleResizeDown = (e, direction) => {
+  const handleResizeDown = (e, direction, cursorAngle) => {
     e.preventDefault();
     e.stopPropagation();
     resizingRef.current = true;
@@ -146,6 +146,10 @@ const useTransformObject = (canvasObject: CanvasObject) => {
       y: e.clientY,
     };
 
+    document.body.style.cursor = CONSTANTS.CURSOR_RESIZE.replace(
+      "{rotationAngle}",
+      `${cursorAngle}`
+    );
     document.addEventListener("mousemove", handleResizeMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
@@ -295,6 +299,8 @@ const useTransformObject = (canvasObject: CanvasObject) => {
     rotatingRef.current = false;
     resizingRef.current = false;
 
+    document.body.style.cursor = "auto";
+
     document.removeEventListener("mousemove", handleDragMove);
     document.removeEventListener("mousemove", handleRotateMove);
     document.removeEventListener("mousemove", handleResizeMove);
@@ -319,7 +325,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current + 45}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "left")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "left", currentRotationRef.current + 45)
+          }
         />
         <div
           className={`resize-handle right`}
@@ -329,7 +337,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current + 45}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "right")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "right", currentRotationRef.current + 45)
+          }
         />
         <div
           className={`resize-handle top`}
@@ -339,7 +349,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current - 45}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "top")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "top", currentRotationRef.current - 45)
+          }
         />
         <div
           className={`resize-handle bottom`}
@@ -349,7 +361,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current - 45}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "bottom")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "bottom", currentRotationRef.current - 45)
+          }
         />
         <div
           className={`resize-handle ${showHandles ? "corner" : ""} top-left`}
@@ -359,7 +373,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current - 90}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "top-left")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "top-left", currentRotationRef.current - 90)
+          }
         />
         <div
           className={`resize-handle ${showHandles ? "corner" : ""} top-right`}
@@ -369,7 +385,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "top-right")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "top-right", currentRotationRef.current)
+          }
         />
         <div
           className={`resize-handle ${showHandles ? "corner" : ""} bottom-left`}
@@ -379,7 +397,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "bottom-left")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "bottom-left", currentRotationRef.current)
+          }
         />
         <div
           className={`resize-handle ${
@@ -391,7 +411,9 @@ const useTransformObject = (canvasObject: CanvasObject) => {
               `${currentRotationRef.current - 90}`
             ),
           }}
-          onMouseDown={(e) => handleResizeDown(e, "bottom-right")}
+          onMouseDown={(e) =>
+            handleResizeDown(e, "bottom-right", currentRotationRef.current - 90)
+          }
         />
         <div
           className="rotate-handle top-left"
