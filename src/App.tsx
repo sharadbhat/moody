@@ -48,7 +48,7 @@ function App() {
         <AppShell.Main style={{ paddingTop: 0 }}>
           <LoadingOverlay
             visible
-            zIndex={1}
+            zIndex={301}
             style={{
               visibility: boardLoading ? "visible" : "hidden",
             }}

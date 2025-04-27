@@ -10,7 +10,7 @@
   align-items: center;
   padding: 10px 20px;
   border-radius: 10px;
-  z-index: 2;
+  z-index: 302;
   background-color: var(--mantine-color-default-hover);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--mantine-color-default-border);
