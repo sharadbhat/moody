@@ -1,3 +1,5 @@
+import { Ref, RefObject } from "react";
+
 export enum FileType {
   IMAGE = "IMAGE",
   TEXT = "TEXT",
@@ -8,21 +10,10 @@ export type BoardData = {
   boardName: string;
 };
 
-export type Point = {
-  x: number;
-  y: number;
-};
-
-export type CanvasObjectPoints = {
-  point1: Point;
-  point2: Point;
-  point3: Point;
-  point4: Point;
-};
-
 export interface CanvasObject {
   id: string;
-  points: CanvasObjectPoints;
+  x: number;
+  y: number;
   rotationAngle: number;
   fileType: FileType;
   fileContent: string;
@@ -41,13 +32,15 @@ export interface MoodyStoreState {
   boardId: string;
   boardName: string;
   canvasObjectList: CanvasObject[];
+  selectedCanvasObjectId: string;
+  selectedCanvasObjectRef: RefObject<any>;
+  selectedCanvasObjectLocked: boolean;
   backgroundPatternId: number;
   patternColor: string;
   backgroundColor: string;
   scale: number;
   offsetX: number;
   offsetY: number;
-  lastMousePosition: Point;
   isCropping: boolean;
   cropDimensions: {
     x: number;
@@ -69,8 +62,10 @@ export interface MoodyStore extends MoodyStoreState {
     width: number,
     height: number
   ) => void;
-  setLastMousePosition: (position: Point) => void;
   setBoardName: (boardName: string) => void;
+  setSelectedCanvasObjectId: (canvasObjectId: string) => void;
+  setSelectedCanvasObjectRef: (ref: RefObject<any>) => void;
+  setSelectedCanvasObjectLocked: (locked: boolean) => void;
   setBackgroundPatternId: (backgroundPatternId: number) => void;
   setPatternColor: (color: string) => void;
   setBackgroundColor: (color: string) => void;
@@ -79,7 +74,7 @@ export interface MoodyStore extends MoodyStoreState {
   addCanvasObject: (canvasObject: CanvasObject) => void;
   removeCanvasObject: (canvasObjectId: string) => void;
   setCanvasObjectLock: (canvasObjectId: string, lockState: boolean) => void;
-  setCanvasObjectPosition: (id: string, points: CanvasObjectPoints) => void;
+  setCanvasObjectPosition: (id: string, points: any) => void;
   setCanvasObjectLayerBack: (id: string) => void;
   setCanvasObjectLayerFront: (id: string) => void;
   setCanvasObjectLockAspectRatio: (id: string, lockState: boolean) => void;

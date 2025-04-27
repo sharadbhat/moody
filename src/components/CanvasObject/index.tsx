@@ -1,118 +1,100 @@
-import "./index.css";
-import { type CanvasObject, FileType } from "../../utils/types";
-import CanvasObjectControls from "../CanvasObjectControls";
-import { Popover } from "@mantine/core";
-import useTransformObject from "../../hooks/useTransformObject";
-import {
-  useClickOutside,
-  useDisclosure,
-  useHover,
-  useMergedRef,
-} from "@mantine/hooks";
+import { useRef, useState } from "react";
+import useImage from "use-image";
+import { Group, Image as KonvaImage } from "react-konva";
+import { Group as MantineGroup } from "@mantine/core";
+import { useMoodyStore } from "../../utils/store";
 import { CONSTANTS } from "../../utils/constants";
-import { useState } from "react";
+import { Html } from "react-konva-utils";
+import CanvasObjectControls from "../CanvasObjectControls";
 
-const CanvasObject = (canvasObject: CanvasObject) => {
-  const { Handles, handleDragDown, isDragging, isResizing, isRotating } =
-    useTransformObject(canvasObject);
+export const CanvasObject = ({ src, id, x, y, locked, aspectRatioLocked }) => {
+  const [image] = useImage(src);
 
-  const [opened, { close, toggle }] = useDisclosure(false);
-  const [mouseDownTimestamp, setMouseDownTimestamp] = useState(0);
+  const {
+    selectedCanvasObjectId,
+    setSelectedCanvasObjectId,
+    setSelectedCanvasObjectRef,
+  } = useMoodyStore();
 
-  const clickOutsideRef = useClickOutside(close);
-  const { hovered, ref: hoverRef } = useHover();
-  const mergedRef = useMergedRef(hoverRef, clickOutsideRef);
+  const objectRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const { points } = canvasObject;
-
-  const width = Math.sqrt(
-    Math.pow(points.point2.x - points.point1.x, 2) +
-      Math.pow(points.point2.y - points.point1.y, 2)
-  );
-
-  const height = Math.sqrt(
-    Math.pow(points.point4.x - points.point1.x, 2) +
-      Math.pow(points.point4.y - points.point1.y, 2)
-  );
-
-  const imageCenterX = width / 2;
-  const imageCenterY = height / 2;
-
-  const centerX = (points.point1.x + points.point3.x) / 2;
-  const centerY = (points.point1.y + points.point3.y) / 2;
-
-  const translateX = centerX - imageCenterX;
-  const translateY = centerY - imageCenterY;
-
-  const angle = Math.atan2(
-    points.point2.y - points.point1.y,
-    points.point2.x - points.point1.x
-  );
-  const angleInDegrees = (angle * 180) / Math.PI;
-
-  const renderContent = () => {
-    if (canvasObject.fileType === FileType.IMAGE) {
-      return (
-        <img
-          className={`canvasImage ${
-            isDragging || isResizing || isRotating || hovered || opened
-              ? "canvasImageSelected"
-              : ""
-          }`}
-          src={canvasObject.fileContent}
-          draggable={false}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (Date.now() - mouseDownTimestamp < 200) {
-              toggle();
-            }
-          }}
-          onMouseDown={(e) => {
-            setMouseDownTimestamp(Date.now());
-            if (!canvasObject.locked) {
-              handleDragDown(e);
-            }
-          }}
-        />
-      );
+  const handleClick = () => {
+    if (selectedCanvasObjectId === id) {
+      setSelectedCanvasObjectRef(null);
+      setSelectedCanvasObjectId(null);
+    } else {
+      setSelectedCanvasObjectRef(objectRef);
+      setSelectedCanvasObjectId(id);
     }
   };
 
+  const transformFunc = (attrs) => {
+    const imageNode = objectRef.current;
+    const stage = imageNode?.getStage();
+    if (!imageNode || !stage) return attrs;
+
+    const box = imageNode.getClientRect();
+    const x = box.x + box.width;
+    const y = box.y;
+
+    return {
+      ...attrs,
+      x: x - 200,
+      y: y - 35,
+      scaleX: 1,
+      scaleY: 1,
+    };
+  };
+
+  const handleUnlockCanvasObject = () => {
+    setSelectedCanvasObjectRef(objectRef);
+    setSelectedCanvasObjectId(id);
+  };
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        transformOrigin: "center",
-        width: width,
-        height: height,
-        transform: `translate(${translateX}px, ${translateY}px) rotate(${angleInDegrees}deg)`,
-        cursor: canvasObject.locked
-          ? CONSTANTS.CURSOR_DEFAULT
-          : CONSTANTS.CURSOR_MOVE,
-      }}
-      ref={mergedRef}
-    >
-      {!canvasObject.locked && (
-        <Handles show={isDragging || isResizing || isRotating || hovered} />
+    <Group x={x} y={y} draggable={!locked}>
+      {selectedCanvasObjectId === id && (
+        <Html transformFunc={transformFunc}>
+          <MantineGroup justify="end" w={200}>
+            <CanvasObjectControls
+              id={id}
+              locked={locked}
+              aspectRatioLocked={aspectRatioLocked}
+              handleUnlockCanvasObject={handleUnlockCanvasObject}
+            />
+          </MantineGroup>
+        </Html>
       )}
-      <Popover
-        opened={opened}
-        onClose={close}
-        position={canvasObject.locked ? "top" : "top-end"}
-        styles={{ dropdown: { padding: 0 } }}
-        withinPortal={true}
-      >
-        <Popover.Target>{renderContent()}</Popover.Target>
-        <Popover.Dropdown>
-          <CanvasObjectControls
-            id={canvasObject.id}
-            aspectRatioLocked={canvasObject.lockAspectRatio}
-            locked={canvasObject.locked}
-          />
-        </Popover.Dropdown>
-      </Popover>
-    </div>
+      <KonvaImage
+        image={image}
+        ref={objectRef}
+        x={0}
+        y={0}
+        offsetX={image ? image.width / 2 : 0}
+        offsetY={image ? image.height / 2 : 0}
+        onClick={handleClick}
+        onTap={handleClick}
+        stroke={"black"}
+        strokeWidth={4}
+        strokeEnabled={
+          (selectedCanvasObjectId === id && locked) ||
+          (selectedCanvasObjectId !== id && isHovered)
+        }
+        strokeScaleEnabled={false}
+        onMouseEnter={() => {
+          setIsHovered(true);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+        }}
+        onMouseDown={() => {
+          document.body.style.cursor = CONSTANTS.CURSOR_MOVE;
+        }}
+        onMouseUp={() =>
+          (document.body.style.cursor = CONSTANTS.CURSOR_DEFAULT)
+        }
+      />
+    </Group>
   );
 };
-
-export default CanvasObject;

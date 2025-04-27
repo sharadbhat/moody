@@ -9,17 +9,20 @@ import {
 } from "@tabler/icons-react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { useCanvasObject } from "../../hooks/useCanvasObject";
+import { CONSTANTS } from "../../utils/constants";
 
 export interface CanvasObjectControlsProps {
   id: string;
   aspectRatioLocked: boolean;
   locked: boolean;
+  handleUnlockCanvasObject: () => void;
 }
 
 const CanvasObjectControls = ({
   id,
   aspectRatioLocked,
   locked,
+  handleUnlockCanvasObject,
 }: CanvasObjectControlsProps) => {
   const {
     handleBringToFront,
@@ -80,7 +83,10 @@ const CanvasObjectControls = ({
           <CanvasObjectControlButton
             icon={<IconLock stroke={1.75} />}
             label={"Unlock"}
-            onClick={() => handleLockCanvasObject(id, false)}
+            onClick={() => {
+              handleLockCanvasObject(id, false);
+              handleUnlockCanvasObject();
+            }}
             isEnabled={true}
           />
         </ActionIcon.Group>
@@ -102,13 +108,16 @@ const CanvasObjectControlButton = ({
   isEnabled,
   label,
 }: CanvasObjectControlButtonProps) => {
-  let variant = "subtle";
-  let color = "gray";
+  // let variant = "subtle";
+  // let color = "gray";
 
-  if (isEnabled) {
-    variant = "filled";
-    color = "blue";
-  }
+  // if (isEnabled) {
+  //   variant = "filled";
+  //   color = "blue";
+  // }
+
+  const variant = "default";
+  const color = "gray";
 
   return (
     <Tooltip label={label} position="top" withArrow>
@@ -116,7 +125,9 @@ const CanvasObjectControlButton = ({
         variant={variant}
         aria-label={label}
         onClick={onClick}
-        color={color}
+        style={{
+          cursor: CONSTANTS.CURSOR_POINTER,
+        }}
       >
         {icon}
       </ActionIcon>

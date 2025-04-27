@@ -8,7 +8,12 @@ const LAST_BOARD_ID_STORE_NAME = "lastBoardId";
 
 const VERSION = 1;
 
-const REMOVE_KEYS = ["boardList", "boardLoading"];
+const REMOVE_KEYS = [
+  "boardList",
+  "boardLoading",
+  "selectedCanvasObjectId",
+  "selectedCanvasObjectRef",
+];
 
 export const useStorage = () => {
   const { setBoardList, setBoardLoading } = useMoodyStore();

@@ -1,30 +1,46 @@
+import { useRef } from "react";
+import { useMoodyStore } from "../utils/store";
 import { FileType } from "../utils/types";
 import { useCanvasObject } from "./useCanvasObject";
-import { useMoodyStore } from "../utils/store";
-import { useRef } from "react";
-import { CONSTANTS } from "../utils/constants";
 
 export const useInfiniteCanvas = () => {
-  const { scale, offsetX, offsetY, setScale, setOffset, setLastMousePosition } =
-    useMoodyStore((state) => state);
+  const stageRef = useRef(null);
+  const {
+    setSelectedCanvasObjectId,
+    setSelectedCanvasObjectRef,
+    setScale,
+    setOffset,
+  } = useMoodyStore();
 
   const { handleNewCanvasObject } = useCanvasObject();
 
-  const offsetXRef = useRef(offsetX);
-  const offsetYRef = useRef(offsetY);
-  const isPanning = useRef(false);
-  const startXRef = useRef(0);
-  const startYRef = useRef(0);
-  const animationFrameRef = useRef(null);
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const files = event.dataTransfer?.files;
-    const url = event.dataTransfer?.getData("URL");
+  const getScaledPointerPosition = (e) => {
+    const stage = stageRef.current;
+
+    stage.setPointersPositions(e);
+    const position = stage.getPointerPosition();
+
+    const stageAttrs = stage.attrs;
+
+    var x = (position.x - (stageAttrs.x || 0)) / (stageAttrs.scaleX || 1);
+    var y = (position.y - (stageAttrs.y || 0)) / (stageAttrs.scaleY || 1);
+
+    return { x, y };
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+
+    if (!stageRef.current) return;
+
+    const position = getScaledPointerPosition(e);
+
+    const files = e.dataTransfer?.files;
+    const url = e.dataTransfer?.getData("URL");
 
     if (files.length > 0) {
       let prevX = 0;
@@ -35,8 +51,8 @@ export const useInfiniteCanvas = () => {
             handleNewCanvasObject({
               fileType: FileType.IMAGE,
               fileContent: reader.result as string,
-              x: event.clientX + prevX,
-              y: event.clientY,
+              x: position.x + prevX,
+              y: position.y,
             });
             prevX += 100; // Offset images by 100px if multiple dropped
           };
@@ -47,82 +63,61 @@ export const useInfiniteCanvas = () => {
       handleNewCanvasObject({
         fileType: FileType.IMAGE,
         fileContent: url,
-        x: event.clientX / scale,
-        y: event.clientY / scale,
+        x: position.x,
+        y: position.y,
       });
     }
   };
 
-  const handleWheelScroll = (event) => {
-    event.preventDefault();
+  const handleWheelScroll = (e) => {
+    e.evt.preventDefault();
 
-    const scaleDelta = event.deltaY > 0 ? 0.9 : 1.1;
-    let newScale = scale * scaleDelta;
+    setSelectedCanvasObjectId(null);
+
+    const stage = stageRef.current;
+    const oldScale = stage.scaleX();
+    const pointer = stage.getPointerPosition();
+
+    const mousePointTo = {
+      x: (pointer.x - stage.x()) / oldScale,
+      y: (pointer.y - stage.y()) / oldScale,
+    };
+
+    let direction = e.evt.deltaY > 0 ? -1 : 1;
+
+    let scaleBy = 1.1;
+    if (e.evt.ctrlKey) {
+      scaleBy = 1.025; // smoother scrolling on trackpad
+    }
+
+    let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
     if (newScale < 0.1) newScale = 0.1;
     else if (newScale > 3) newScale = 3;
-    else if (newScale > 0.95 && newScale < 1.05) newScale = 1;
 
-    const worldX = event.clientX / scale + offsetXRef.current;
-    const worldY = event.clientY / scale + offsetYRef.current;
-
-    const newOffsetX = worldX - event.clientX / newScale;
-    const newOffsetY = worldY - event.clientY / newScale;
-
-    offsetXRef.current = newOffsetX;
-    offsetYRef.current = newOffsetY;
-
-    setOffset(newOffsetX, newOffsetY);
+    stage.scale({ x: newScale, y: newScale });
     setScale(newScale);
-    setLastMousePosition({ x: event.clientX, y: event.clientY });
+
+    const newPos = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+    stage.position(newPos);
+    setOffset(newPos.x, newPos.y);
   };
 
-  const handleMouseDown = (event) => {
-    startXRef.current = event.clientX;
-    startYRef.current = event.clientY;
-
-    isPanning.current = true;
-
-    document.body.style.cursor = CONSTANTS.CURSOR_GRABBING;
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  const handleMouseMove = (event) => {
-    if (!isPanning.current) {
-      return;
+  const handleClick = (e) => {
+    if (e.target === e.target.getStage()) {
+      setSelectedCanvasObjectId(null);
+      setSelectedCanvasObjectRef(null);
     }
-
-    if (!animationFrameRef.current) {
-      animationFrameRef.current = requestAnimationFrame(() => {
-        const deltaX = event.clientX - startXRef.current;
-        const deltaY = event.clientY - startYRef.current;
-
-        offsetXRef.current -= deltaX;
-        offsetYRef.current -= deltaY;
-        setOffset(offsetXRef.current, offsetYRef.current);
-
-        startXRef.current = event.clientX;
-        startYRef.current = event.clientY;
-        animationFrameRef.current = null;
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    isPanning.current = false;
-
-    document.body.style.cursor = CONSTANTS.CURSOR_DEFAULT;
-
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
   };
 
   return {
+    stageRef,
     handleDragOver,
     handleDrop,
     handleWheelScroll,
-    handleMouseDown,
+    handleClick,
   };
 };

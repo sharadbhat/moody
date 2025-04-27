@@ -11,7 +11,10 @@ const initialState: MoodyStoreState = {
   scale: 1,
   offsetX: 0,
   offsetY: 0,
-  lastMousePosition: { x: 0, y: 0 },
+
+  selectedCanvasObjectId: null,
+  selectedCanvasObjectRef: null,
+  selectedCanvasObjectLocked: false,
 
   // Global settings
   snapToGrid: false,
@@ -29,6 +32,21 @@ const initialState: MoodyStoreState = {
 export const useMoodyStore = create<MoodyStore>()((set) => ({
   // State variables
   ...initialState,
+
+  setSelectedCanvasObjectId: (canvasObjectId) =>
+    set(() => ({
+      selectedCanvasObjectId: canvasObjectId,
+    })),
+
+  setSelectedCanvasObjectRef: (ref) =>
+    set(() => ({
+      selectedCanvasObjectRef: ref,
+    })),
+
+  setSelectedCanvasObjectLocked: (locked) =>
+    set(() => ({
+      selectedCanvasObjectLocked: locked,
+    })),
 
   // Settings actions
   toggleSnapToGrid: () =>
@@ -48,13 +66,6 @@ export const useMoodyStore = create<MoodyStore>()((set) => ({
         y,
         width,
         height,
-      },
-    })),
-  setLastMousePosition: (position) =>
-    set(() => ({
-      lastMousePosition: {
-        x: position.x,
-        y: position.y,
       },
     })),
 

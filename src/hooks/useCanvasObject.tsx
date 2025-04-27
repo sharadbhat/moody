@@ -22,6 +22,9 @@ export const useCanvasObject = () => {
     setCanvasObjectLayerBack,
     setCanvasObjectLayerFront,
     setCanvasObjectLockAspectRatio,
+    setSelectedCanvasObjectLocked,
+    setSelectedCanvasObjectId,
+    setSelectedCanvasObjectRef,
   } = useMoodyStore((state) => state);
 
   const createImageCanvasObject = ({
@@ -39,17 +42,10 @@ export const useCanvasObject = () => {
       height = scaledMaxDimension;
     }
 
-    const x1 = x - width / 2;
-    const y1 = y - height / 2;
-
     return {
       id: `${Date.now()}`,
-      points: {
-        point1: { x: x1, y: y1 },
-        point2: { x: x1 + width, y: y1 },
-        point3: { x: x1 + width, y: y1 + height },
-        point4: { x: x1, y: y1 + height },
-      },
+      x: x,
+      y: y,
       rotationAngle: 0,
       fileType: FileType.IMAGE,
       fileContent: imageObject?.src || "",
@@ -81,10 +77,14 @@ export const useCanvasObject = () => {
 
   const handleDeleteCanvasObject = (id: string) => {
     removeCanvasObject(id);
+    setSelectedCanvasObjectId(null);
+    setSelectedCanvasObjectRef(null);
   };
 
   const handleLockCanvasObject = (id: string, lockState: boolean) => {
     setCanvasObjectLock(id, lockState);
+    setSelectedCanvasObjectLocked(lockState);
+    setSelectedCanvasObjectRef(null);
   };
 
   const handleSendToBack = (id: string) => {
